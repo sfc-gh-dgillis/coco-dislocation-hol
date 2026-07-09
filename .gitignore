@@ -28,9 +28,6 @@ tasks.json
 *.so
 *.dylib
 
-# .env files
-*.env
-
 # Python virtual environments
 .venv/
 venv/
