@@ -2,6 +2,8 @@
 
 A ready-to-deploy Snowflake-native demo that proves one concept: **directors can move from manually stitching dashboard outputs to asking a governed question and receiving a fast, explainable answer.**
 
+> **What is pricing dislocation?** For an insurance company, *dislocation* is the shift in premium that individual policyholders experience when the carrier moves from its current rating plan to a proposed one. Even a revenue-neutral rate filing rarely moves everyone equally — some insureds see increases, others decreases — so insurers analyze dislocation *before* deploying a new plan to understand who is affected, by how much, and where. It matters because large increases drive non-renewal (retention risk), regulators cap how much any single policy can swing, and impact can concentrate in a segment or geography. This demo scores that risk across a synthetic Florida property book by combining proposed rate change with lapse propensity, loss experience, and competitive position.
+
 ---
 
 ## What This Demo Does
