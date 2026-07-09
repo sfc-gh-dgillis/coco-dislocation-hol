@@ -715,9 +715,9 @@ CoCo will produce:
 - A fully configured agent with skill routing
 - Verification SQL to confirm the build works
 
-### Alternative: run the install script directly
+### Alternative: run the deployment script directly
 
-If you prefer deterministic deployment, run `install.sql` directly via SnowSQL or Snow CLI. See the `deploy.sh` script for automated deployment.
+If you prefer deterministic deployment, run `./setup.sh`. It sources `.env/dislocation.env`, executes the numbered SQL files in `sql/` (in order) via the Snowflake CLI, uploads the agent skills to the stage, and verifies the build. The lab is CLI-deployed and consumed from Cortex Code (`cortex agents run`, `cortex analyst query`) — Snowsight is not required. See `README.md` for the full lab flow.
 
 ## 17. Final guidance
 

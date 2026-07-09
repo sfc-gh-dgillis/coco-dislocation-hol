@@ -1,0 +1,10 @@
+definition_version: 2
+env:
+  # Object names resolved into the numbered SQL files via <% ctx.env.X %>.
+  # Shell environment variables (exported by setup.sh from .env) override these.
+  ROLE: "set_via_shell_env_var"
+  WAREHOUSE: "set_via_shell_env_var"
+  DATABASE: "set_via_shell_env_var"
+  SCHEMA: "set_via_shell_env_var"
+  SKILLS_SCHEMA: "set_via_shell_env_var"
+  STAGE: "set_via_shell_env_var"
