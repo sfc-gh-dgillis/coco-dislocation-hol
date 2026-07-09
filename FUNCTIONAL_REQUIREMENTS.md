@@ -2,7 +2,7 @@
 
 ## 1. Document purpose
 
-This document defines the functional requirements for an insurance-focused agentic analytics solution that can be used as input context for **Cortex Code / CoCo** to generate implementation assets, deployment scripts, semantic models, agent configuration, prompt files, and demo documentation.
+This document defines the functional requirements for an insurance-focused agentic analytics solution that can be used as input context for **Coco** to generate implementation assets, deployment scripts, semantic models, agent configuration, prompt files, and demo documentation.
 
 The target outcome is to reduce the manual effort insurance directors and analysts currently spend stitching together insights across multiple dashboards and move toward an on-demand, governed, conversational intelligence experience aligned to the broader industry shift from static reporting to agentic analytics.
 
@@ -83,7 +83,7 @@ The solution must support distinct personas:
 
 ## 6.1 Phase 1: build now
 
-Phase 1 should use currently available and production-sensible capabilities centered on **Snowflake Intelligence**, **Cortex Agents**, **semantic views**, **Cortex Code**, and standard Snowflake governance patterns.
+Phase 1 should use currently available and production-sensible capabilities centered on **Snowflake Cowork**, **Cortex Agents**, **semantic views**, **Coco**, and standard Snowflake governance patterns.
 
 Phase 1 includes:
 
@@ -101,7 +101,7 @@ Phase 1 includes:
 
 Phase 2 should expand into newly released or recently announced capabilities where account readiness and customer eligibility permit, including:
 
-- **Skills** in Snowflake Intelligence / Cortex ecosystem
+- **Skills** in Snowflake Cowork / Cortex ecosystem
 - **MCP connectors** for external systems and tools
 - broader workflow automation and action-taking
 - richer chart customization and expanded visualization options
@@ -223,7 +223,7 @@ Future phases should consider:
 
 ## 8.3.1 Translating skills into deployable assets
 
-In the functional specification, a **skill** should not be treated as a vague capability label. In implementation, each skill must map to a concrete, versioned set of deployable assets that Snowflake Intelligence or a Cortex Agent can orchestrate at runtime.
+In the functional specification, a **skill** should not be treated as a vague capability label. In implementation, each skill must map to a concrete, versioned set of deployable assets that Snowflake Cowork or a Cortex Agent can orchestrate at runtime.
 
 The practical translation is:
 
@@ -314,7 +314,7 @@ The implementation should separate responsibilities clearly:
 - **semantic views** answer "what data and metrics mean"
 - **skills** answer "how to perform a repeatable analytical task"
 - **agents** answer "when to invoke which skill or tool"
-- **applications / Snowflake Intelligence UX** answer "how the user interacts with the system"
+- **applications / Snowflake Cowork UX** answer "how the user interacts with the system"
 
 This is important because some use cases may be best solved with direct semantic retrieval and light orchestration, while others may require a richer skill with specific instructions, formatting, or code-backed execution.
 
@@ -390,7 +390,7 @@ The system must support:
 - regenerated outputs after filter changes
 - a transparent path from answer to underlying logic and data
 
-Phase 1 should assume business users interact primarily through **Snowflake Intelligence** or a Snowflake-backed application using the same APIs and semantic constructs.
+Phase 1 should assume business users interact primarily through **Snowflake Cowork** or a Snowflake-backed application using the same APIs and semantic constructs.
 
 ## 8.6 Output types
 
@@ -451,7 +451,7 @@ The system must provide:
 
 The solution must support:
 
-- tagging of Snowflake Intelligence objects for budget attribution
+- tagging of Snowflake Cowork objects for budget attribution
 - budget thresholds and alerting
 - account-level or project-level usage visibility
 - ability to restrict or revoke access if spend exceeds agreed thresholds
@@ -481,7 +481,7 @@ Phase 1 should follow this pattern:
 3. define a thin semantic contract layer for the demo using business-friendly names, stable metric definitions, and configurable source mappings
 4. encode the first analyst workflow into reusable skills / prompts that call the semantic contract layer rather than hard-coded physical table names
 5. configure one primary dislocation agent against those semantic assets
-6. enable Snowflake Intelligence or equivalent app consumption
+6. enable Snowflake Cowork or equivalent app consumption
 7. validate responses with pricing and actuarial SMEs against existing outputs and known benchmarks
 8. add executive-briefing and artifact outputs
 9. instrument cost, logging, telemetry, and access controls
@@ -536,7 +536,7 @@ If the customer is using Data Vault 2.0, the demo should assume the following ta
 - **Curated / Data Mart / semantic views** become the primary agent consumption layer for Phase 1
 - if a required metric does not yet exist in a trusted consumption layer, create a demo adapter object that clearly shows how it would be implemented without requiring a full remodel
 
-The goal is to show that Snowflake Intelligence and Cortex Agents sit **above** the existing data model, not beside it and not in conflict with it.
+The goal is to show that Snowflake Cowork and Cortex Agents sit **above** the existing data model, not beside it and not in conflict with it.
 
 ## 10.3 Handling data that resides outside Snowflake
 
@@ -590,8 +590,8 @@ This allows the demo to be framed as a **natural extension of the customer's cur
 - Customer's existing Snowflake data platform
 - semantic views / governed semantic layer / adapter views
 - Cortex Agents
-- Snowflake Intelligence
-- Cortex Code / CoCo for build acceleration
+- Snowflake Cowork
+- Coco for build acceleration
 - standard Snowflake governance controls
 - resource budgets / usage views for cost management
 - optional external-source adapters or staged extracts for out-of-platform data
@@ -615,7 +615,7 @@ The demo should be presented in this order:
 
 The following are reasonable candidates for planning assumptions or near-term adoption, subject to account readiness:
 
-- Snowflake Intelligence as the business-user conversational layer
+- Snowflake Cowork as the business-user conversational layer
 - Artifacts for saved charts and tables
 - Skills as a rapidly maturing capability / near-term extension
 - MCP connectors as a near-term extension
@@ -642,9 +642,9 @@ Phase 1 is successful when:
 7. usage and cost can be monitored and limited
 8. the implementation pattern is reusable for at least one adjacent use case after dislocation analysis
 
-## 13. CoCo deliverables required from this document
+## 13. Coco deliverables required from this document
 
-CoCo should use this document to generate:
+Coco should use this document to generate:
 
 - SQL deployment scripts
 - semantic model / semantic view definitions
@@ -666,7 +666,7 @@ The following must be resolved before implementation begins:
 3. what are the minimum required variables for the first scoring model?
 4. is Florida property the sole pilot scope or the first of several markets?
 5. what user roles need access in pilot?
-6. should consumption be via Snowflake Intelligence UI first, embedded app first, or both?
+6. should consumption be via Snowflake Cowork UI first, embedded app first, or both?
 7. which external sources, if any, should be integrated in later phases?
 8. which preview capabilities is the customer willing to adopt versus keep as roadmap only?
 
@@ -687,11 +687,11 @@ To minimize delivery risk, the first build slice should be:
 
 This is enough to prove the move from dashboard stitching to governed agentic analytics without overcommitting to platform features that are still maturing.
 
-## 16. Using Cortex Code to build this demo
+## 16. Using Coco to build this demo
 
-The fastest path to a working demo is to paste this functional requirements document into **Cortex Code (CoCo)** and instruct it to build the full deployment in your Snowflake account.
+The fastest path to a working demo is to paste this functional requirements document into **Coco** and instruct it to build the full deployment in your Snowflake account.
 
-### Recommended CoCo prompt
+### Recommended Coco prompt
 
 ```
 Using the attached functional requirements document, build a complete Snowflake-native
@@ -707,9 +707,9 @@ dislocation analysis demo in my connected Snowflake account. Include:
 Use the install.sql script as a reference for the expected schema.
 ```
 
-### What CoCo generates
+### What Coco generates
 
-CoCo will produce:
+Coco will produce:
 - All database objects (tables, views, semantic views, agent)
 - Synthetic test data across 4 states with realistic insurance characteristics
 - A fully configured agent with skill routing
@@ -717,7 +717,7 @@ CoCo will produce:
 
 ### Alternative: run the deployment script directly
 
-If you prefer deterministic deployment, run `./setup.sh`. It sources `.env/dislocation.env`, executes the numbered SQL files in `sql/` (in order) via the Snowflake CLI, uploads the agent skills to the stage, and verifies the build. The lab is CLI-deployed and consumed from Cortex Code (`cortex agents run`, `cortex analyst query`) — Snowsight is not required. See `README.md` for the full lab flow.
+If you prefer deterministic deployment, run `./setup.sh`. It sources `.env/dislocation.env`, executes the numbered SQL files in `sql/` (in order) via the Snowflake CLI, uploads the agent skills to the stage, and verifies the build. The lab is CLI-deployed and consumed from Coco (`cortex agents run`, `cortex analyst query`) — Snowsight is not required. See `README.md` for the full lab flow.
 
 ## 17. Final guidance
 

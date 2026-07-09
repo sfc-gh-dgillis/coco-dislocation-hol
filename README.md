@@ -1,6 +1,6 @@
-# Pricing Dislocation — Cortex Code Hands-On Lab
+# Pricing Dislocation — Coco CLI Hands-On Lab
 
-A command-line hands-on lab that you run end-to-end from **Cortex Code (CoCo)** and the **Snowflake CLI**. You deploy a governed, agentic analytics workload into your own Snowflake account, then ask a natural-language question and get a fast, explainable answer — without ever opening Snowsight.
+A command-line hands-on lab that you run end-to-end from **Coco CLI** and the **Snowflake CLI**. You deploy a governed, agentic analytics workload into your own Snowflake account, then ask a natural-language question and get a fast, explainable answer — without ever opening Snowsight.
 
 > **What is pricing dislocation?** For an insurance company, *dislocation* is the shift in premium that individual policyholders experience when the carrier moves from its current rating plan to a proposed one. Even a revenue-neutral rate filing rarely moves everyone equally — some insureds see increases, others decreases — so insurers analyze dislocation *before* deploying a new plan to understand who is affected, by how much, and where. It matters because large increases drive non-renewal (retention risk), regulators cap how much any single policy can swing, and impact can concentrate in a segment or geography. This lab scores that risk across a synthetic multi-state property book by combining proposed rate change with lapse propensity, loss experience, and competitive position.
 
@@ -14,7 +14,7 @@ By the end of this lab you will have, entirely from the CLI:
 2. Asked the deployed **Cortex Agent** business questions using `cortex agents run`.
 3. Queried the **semantic views** directly with `cortex analyst query`.
 4. Demonstrated **governed access** by switching roles, and (optionally) **dynamic PII masking** where the same question returns different results by role.
-5. (Optional capstone) Opened the same agent in **Snowflake Intelligence** — the only step in the lab that uses Snowsight.
+5. (Optional capstone) Opened the same agent in **Snowflake Cowork** — the only step in the lab that uses Snowsight.
 
 ---
 
@@ -22,8 +22,8 @@ By the end of this lab you will have, entirely from the CLI:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  YOU  (Cortex Code / Snowflake CLI)                         │
-│    • cortex agents run   → ask the agent (Intelligence mode) │
+│  YOU  (Coco CLI / Snowflake CLI)                         │
+│    • cortex agents run   → ask the agent (Snowflake Cowork mode) │
 │    • cortex analyst query → query semantic views             │
 │    • setup.sh / teardown.sh → deploy & remove                │
 └───────────────────────┬─────────────────────────────────────┘
@@ -46,14 +46,14 @@ By the end of this lab you will have, entirely from the CLI:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-> **Why are the 5 skills uploaded to a stage?** These are **Cortex Agent skills**, not local CoCo skills. The agent runs *inside* Snowflake, so it loads each `SKILL.md` server-side from the named stage referenced in `sql/005-agent.sql`. `setup.sh` uploads them there. (The separate, optional `install-skill.sh` installs a *local* CoCo companion skill on your laptop — a different thing.)
+> **Why are the 5 skills uploaded to a stage?** These are **Cortex Agent skills**, not local Coco skills. The agent runs *inside* Snowflake, so it loads each `SKILL.md` server-side from the named stage referenced in `sql/005-agent.sql`. `setup.sh` uploads them there. (The separate, optional `install-skill.sh` installs a *local* Coco companion skill on your laptop — a different thing.)
 
 ---
 
 ## Prerequisites
 
 - [**Snowflake CLI**](https://docs.snowflake.com/en/developer-guide/snowflake-cli) (`snow`) configured with a connection (key-pair auth recommended). This is the only thing you must set up in advance — no Snowsight.
-- [**Cortex Code**](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code) (`cortex`) — used to ask the agent and query semantic views.
+- [**Coco CLI**](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code) (`cortex`) — used to ask the agent and query semantic views.
 - **Python 3** — used by `setup.sh` / `snowclisp` to run the numbered SQL files.
 - A role with privileges to create a database, warehouse, roles, and a Cortex Agent (e.g. `ACCOUNTADMIN`).
 - Cross-region inference enabled for the agent's models:
@@ -71,7 +71,7 @@ coco-dislocation-hol/
 ├── FUNCTIONAL_REQUIREMENTS.md      ← product/requirements spec (background)
 ├── setup.sh                        ← one-command deploy (SQL files + skill upload + verify)
 ├── teardown.sh                     ← remove everything the lab created
-├── install-skill.sh                ← (optional) install the local CoCo companion skill
+├── install-skill.sh                ← (optional) install the local Coco companion skill
 ├── .env/
 │   └── dislocation.env.template    ← deploy config template (copy to dislocation.env)
 ├── sql/
@@ -89,7 +89,7 @@ coco-dislocation-hol/
 │   ├── market-hotspot-summary/SKILL.md
 │   ├── explain-drivers/SKILL.md
 │   └── executive-briefing/SKILL.md
-├── coco-skill/dislocation-lab/SKILL.md   ← local CoCo companion skill (installed by install-skill.sh)
+├── coco-skill/dislocation-lab/SKILL.md   ← local Coco companion skill (installed by install-skill.sh)
 └── pyutil/snowclisp/snowclisp.py         ← runs the numbered SQL files in order via `snow sql`
 ```
 
@@ -117,7 +117,7 @@ cp .env/dislocation.env.template .env/dislocation.env
 
 ## Module 1 — Ask the agent
 
-The deployed agent is reachable from the CLI in "Snowflake Intelligence mode". Using the defaults, its fully-qualified name is `DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT`.
+The deployed agent is reachable from the CLI in "Snowflake Cowork mode". Using the defaults, its fully-qualified name is `DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT`.
 
 ```bash
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT \
@@ -255,9 +255,9 @@ Ask the agent the same claims question under each role and observe the masked vs
 
 ---
 
-## Optional capstone — Snowflake Intelligence
+## Optional capstone — Snowflake Cowork
 
-Everything above is CLI-only. If you want to see the same agent in a chat UI, open **Snowflake Intelligence**, select `DISLOCATION_ANALYSIS_AGENT`, and ask *"Find pricing dislocation in Florida property."* This is the **only** step in the lab that uses Snowsight, and it's entirely optional — the agent you built from the CLI is the same one.
+Everything above is CLI-only. If you want to see the same agent in a chat UI, open **Snowflake Cowork**, select `DISLOCATION_ANALYSIS_AGENT`, and ask *"Find pricing dislocation in Florida property."* This is the **only** step in the lab that uses Snowsight, and it's entirely optional — the agent you built from the CLI is the same one.
 
 ---
 

@@ -1,14 +1,14 @@
 ---
 name: dislocation-lab
-description: Guides a user through the Pricing Dislocation Cortex Code hands-on lab — deploying the objects, asking the deployed agent questions from the CLI, querying the semantic views, and demonstrating RBAC + PII masking. Invoke when the user mentions the dislocation lab, dislocation analysis, or asks how to run/drive this lab.
+description: Guides a user through the Pricing Dislocation Coco hands-on lab — deploying the objects, asking the deployed agent questions from the CLI, querying the semantic views, and demonstrating RBAC + PII masking. Invoke when the user mentions the dislocation lab, dislocation analysis, or asks how to run/drive this lab.
 ---
 
-# Dislocation Lab Guide (Cortex Code companion skill)
+# Dislocation Lab Guide (Coco companion skill)
 
-This is a local Cortex Code skill that helps a participant run the Pricing
+This is a local Coco skill that helps a participant run the Pricing
 Dislocation hands-on lab entirely from the command line. No Snowsight is
 required (the only optional Snowsight step is chatting with the deployed agent
-in Snowflake Intelligence at the very end).
+in Snowflake Cowork at the very end).
 
 ## Deploy the lab
 
@@ -17,7 +17,7 @@ in Snowflake Intelligence at the very end).
 2. Run `./setup.sh`. It runs `sql/001..006` in order via snowclisp, uploads the
    5 agent skills to the stage, and verifies row counts / semantic views / agent.
 
-## Ask the agent (Snowflake Intelligence, from the CLI)
+## Ask the agent (Snowflake Cowork, from the CLI)
 
 Use `cortex agents run <DB>.<SCHEMA>.DISLOCATION_ANALYSIS_AGENT "<question>"`.
 Good starter questions:

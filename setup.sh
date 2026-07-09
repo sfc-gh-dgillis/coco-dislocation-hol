@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Pricing Dislocation — Cortex Code Hands-On Lab deployment.
+# Pricing Dislocation — Coco CLI Hands-On Lab deployment.
 #
 # 1. Sources the deployment environment variables, then runs the numbered SQL
 #    files in sql/ (001-*.sql .. 006-*.sql) in order via snowclisp, using the
@@ -106,7 +106,7 @@ Deployment complete
 
 Next steps (all from the command line — no Snowsight needed):
 
-  # Ask the agent a question (Snowflake Intelligence, from the CLI):
+  # Ask the agent a question (Snowflake Cowork, from the CLI):
   cortex agents run ${AGENT_FQN} "Find pricing dislocation in Florida property"
 
   # Or query a semantic view directly:
