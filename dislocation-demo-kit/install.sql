@@ -1,28 +1,28 @@
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║  DISLOCATION ANALYSIS — Agentic Analytics Demo Install                  ║
+-- ║  DISLOCATION ANALYSIS — Agentic Analytics Demo Install                    ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║  Industry: Property & Casualty Insurance                                ║
--- ║  Use Case: Pricing Dislocation Analysis (Florida Property)              ║
--- ║  Pattern:  Semantic Views + Cortex Agent + Skills                       ║
--- ║                                                                         ║
--- ║  This script is company-agnostic and reusable across engagements.       ║
--- ║  To customize: change database name and seed data values.               ║
--- ║                                                                         ║
--- ║  PREREQUISITES:                                                         ║
--- ║    • Run as ACCOUNTADMIN (or SYSADMIN + SECURITYADMIN)                  ║
--- ║    • Cross-region inference enabled for Cortex Agent models             ║
--- ║    • Script is idempotent: safe to re-run                               ║
--- ║                                                                         ║
--- ║  COMPANION FILES:                                                       ║
--- ║    dislocation_demo_cleanup.sql  — drops everything this creates        ║
--- ║    skills/*/SKILL.md             — agent skill definitions              ║
--- ║    DEMO_RUNBOOK.md               — demo narrative and prompts           ║
+-- ║  Industry: Property & Casualty Insurance                                  ║
+-- ║  Use Case: Pricing Dislocation Analysis (Florida Property)                ║
+-- ║  Pattern:  Semantic Views + Cortex Agent + Skills                         ║
+-- ║                                                                           ║
+-- ║  This script is company-agnostic and reusable across engagements.         ║
+-- ║  To customize: change database name and seed data values.                 ║
+-- ║                                                                           ║
+-- ║  PREREQUISITES:                                                           ║
+-- ║    • Run as ACCOUNTADMIN (or SYSADMIN + SECURITYADMIN)                    ║
+-- ║    • Cross-region inference enabled for Cortex Agent models               ║
+-- ║    • Script is idempotent: safe to re-run                                 ║
+-- ║                                                                           ║
+-- ║  COMPANION FILES:                                                         ║
+-- ║    dislocation_demo_cleanup.sql  — drops everything this creates          ║
+-- ║    skills/*/SKILL.md             — agent skill definitions                ║
+-- ║    DEMO_RUNBOOK.md               — demo narrative and prompts             ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 USE ROLE ACCOUNTADMIN;
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 1 — Infrastructure                                               │
+-- │ SECTION 1 — Infrastructure                                                │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 CREATE DATABASE IF NOT EXISTS DISLOCATION_DEMO
@@ -164,7 +164,7 @@ CREATE OR REPLACE TABLE FACT_RETENTION (
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 4 — Seed Data: Dimensions                                        │
+-- │ SECTION 4 — Seed Data: Dimensions                                         │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- Perils
@@ -313,7 +313,7 @@ JOIN DIM_GEOGRAPHY g ON g.GEOGRAPHY_KEY = (MOD(gen.row_num, 36) + 1)  -- FL geog
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 6 — Seed Data: Premium History                                   │
+-- │ SECTION 6 — Seed Data: Premium History                                    │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 INSERT INTO FACT_PREMIUM_HISTORY (POLICY_KEY, EFFECTIVE_DATE, WRITTEN_PREMIUM, EARNED_PREMIUM, TIV, ANNUAL_PREMIUM)
@@ -349,7 +349,7 @@ UPDATE FACT_PREMIUM_HISTORY SET
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 7 — Seed Data: Rate Scenario (Proposed Rate Changes)             │
+-- │ SECTION 7 — Seed Data: Rate Scenario (Proposed Rate Changes)              │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- The scenario: proposed rate increases that vary by segment and geography
@@ -395,7 +395,7 @@ WHERE g.STATE = 'FL';  -- Florida focus for the scenario
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 8 — Seed Data: Claims History                                    │
+-- │ SECTION 8 — Seed Data: Claims History                                     │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- Generate ~8000 claims over the past 3 years
@@ -479,7 +479,7 @@ UPDATE FACT_CLAIMS SET INCURRED_LOSS = PAID_LOSS + CASE_RESERVE;
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 9 — Seed Data: Retention Metrics                                 │
+-- │ SECTION 9 — Seed Data: Retention Metrics                                  │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- Retention rates and lapse propensity by segment/geography
@@ -533,7 +533,7 @@ WHERE g.STATE = 'FL';
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 10 — Adapter Views (Stable Semantic Contract Layer)              │
+-- │ SECTION 10 — Adapter Views (Stable Semantic Contract Layer)               │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- Primary dislocation analysis view — the agent's main data surface
@@ -719,7 +719,7 @@ GROUP BY g.STATE, g.STATE_NAME, g.REGION, g.COASTAL_FLAG,
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 11 — Semantic Views                                              │
+-- │ SECTION 11 — Semantic Views                                               │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- Primary semantic view: Dislocation Analysis
@@ -1178,7 +1178,7 @@ CREATE OR REPLACE AGENT DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 13 — RBAC (Lightweight Demo Roles)                               │
+-- │ SECTION 13 — RBAC (Lightweight Demo Roles)                                │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- Director role: agent + semantic views (no raw table access)
@@ -1231,7 +1231,7 @@ GRANT ROLE DISLOCATION_ANALYST_RL TO ROLE ACCOUNTADMIN;
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
--- │ SECTION 14 — Verification Queries                                        │
+-- │ SECTION 14 — Verification Queries                                         │
 -- └───────────────────────────────────────────────────────────────────────────┘
 
 -- Run these after install to confirm everything is working:
@@ -1266,23 +1266,23 @@ DESCRIBE AGENT DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT;
 
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║  INSTALL COMPLETE                                                       ║
--- ║                                                                         ║
--- ║  Objects created:                                                       ║
--- ║    Database      : DISLOCATION_DEMO                                     ║
--- ║    Schemas       : CORE, SKILLS                                         ║
--- ║    Warehouse     : DISLOCATION_DEMO_WH                                  ║
--- ║    Tables        : 8 (4 dimension + 4 fact)                             ║
--- ║    Views         : 2 (adapter views)                                    ║
--- ║    Semantic Views: 2 (SV_DISLOCATION, SV_PORTFOLIO)                     ║
--- ║    Agent         : DISLOCATION_ANALYSIS_AGENT                           ║
--- ║    Roles         : 2 (DIRECTOR, ANALYST)                                ║
--- ║    Stage         : SKILL_STAGE                                          ║
--- ║                                                                         ║
--- ║  Next steps:                                                            ║
--- ║    1. Upload skill files to @DISLOCATION_DEMO.SKILLS.SKILL_STAGE        ║
--- ║    2. Test agent in Snowflake Intelligence                              ║
--- ║    3. Run demo prompts from DEMO_RUNBOOK.md                             ║
--- ║                                                                         ║
--- ║  To tear down: run dislocation_demo_cleanup.sql                         ║
+-- ║  INSTALL COMPLETE                                                         ║
+-- ║                                                                           ║
+-- ║  Objects created:                                                         ║
+-- ║    Database      : DISLOCATION_DEMO                                       ║
+-- ║    Schemas       : CORE, SKILLS                                           ║
+-- ║    Warehouse     : DISLOCATION_DEMO_WH                                    ║
+-- ║    Tables        : 8 (4 dimension + 4 fact)                               ║
+-- ║    Views         : 2 (adapter views)                                      ║
+-- ║    Semantic Views: 2 (SV_DISLOCATION, SV_PORTFOLIO)                       ║
+-- ║    Agent         : DISLOCATION_ANALYSIS_AGENT                             ║
+-- ║    Roles         : 2 (DIRECTOR, ANALYST)                                  ║
+-- ║    Stage         : SKILL_STAGE                                            ║
+-- ║                                                                           ║
+-- ║  Next steps:                                                              ║
+-- ║    1. Upload skill files to @DISLOCATION_DEMO.SKILLS.SKILL_STAGE          ║
+-- ║    2. Test agent in Snowflake Intelligence                                ║
+-- ║    3. Run demo prompts from DEMO_RUNBOOK.md                               ║
+-- ║                                                                           ║
+-- ║  To tear down: run dislocation_demo_cleanup.sql                           ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
