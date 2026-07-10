@@ -20,8 +20,8 @@ CREATE OR REPLACE AGENT <% ctx.env.DATABASE %>.<% ctx.env.SCHEMA %>.DISLOCATION_
 
   orchestration:
     budget:
-      seconds: 45
-      tokens: 16000
+      seconds: 300
+      tokens: 409600
 
   instructions:
     system: |
@@ -157,10 +157,19 @@ CREATE OR REPLACE AGENT <% ctx.env.DATABASE %>.<% ctx.env.SCHEMA %>.DISLOCATION_
   tool_resources:
     Dislocation_Analysis:
       semantic_view: "<% ctx.env.DATABASE %>.<% ctx.env.SCHEMA %>.SV_DISLOCATION"
+      execution_environment:
+        type: warehouse
+        warehouse: <% ctx.env.WAREHOUSE %>
     Portfolio_Context:
       semantic_view: "<% ctx.env.DATABASE %>.<% ctx.env.SCHEMA %>.SV_PORTFOLIO"
+      execution_environment:
+        type: warehouse
+        warehouse: <% ctx.env.WAREHOUSE %>
     Claims_Detail:
       semantic_view: "<% ctx.env.DATABASE %>.<% ctx.env.SCHEMA %>.SV_CLAIMS_DETAIL"
+      execution_environment:
+        type: warehouse
+        warehouse: <% ctx.env.WAREHOUSE %>
 
   skills:
     - name: "dislocation-score"
