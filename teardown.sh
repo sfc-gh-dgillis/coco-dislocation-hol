@@ -27,6 +27,15 @@ set +a
 
 echo "Tearing down ${DATABASE} (schema ${SCHEMA}), warehouse ${WAREHOUSE}, and lab roles..."
 
+# Remove the agent from the account-level Snowflake CoWork object first.
+# Best-effort: the CoWork object is account-level and may not exist (or the
+# agent may not be a member), so we don't let this abort the teardown.
+snow sql -c "$CLI_CONNECTION_NAME" -q "
+USE ROLE ${ROLE};
+ALTER SNOWFLAKE INTELLIGENCE SNOWFLAKE_INTELLIGENCE_OBJECT_DEFAULT
+  DROP AGENT ${DATABASE}.${SCHEMA}.DISLOCATION_ANALYSIS_AGENT;
+" || echo "  (CoWork object or agent membership not present — skipping)"
+
 snow sql -c "$CLI_CONNECTION_NAME" -q "
 USE ROLE ${ROLE};
 

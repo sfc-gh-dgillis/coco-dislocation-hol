@@ -4,9 +4,10 @@ set -euo pipefail
 # Pricing Dislocation — Coco CLI Hands-On Lab deployment.
 #
 # 1. Sources the deployment environment variables, then runs the numbered SQL
-#    files in sql/ (001-*.sql .. 006-*.sql) in order via snowclisp, using the
+#    files in sql/ (001-*.sql .. 007-*.sql) in order via snowclisp, using the
 #    configured Snowflake CLI connection. This creates the database, tables,
-#    seed data, adapter views, semantic views, the Cortex Agent, and RBAC roles.
+#    seed data, adapter views, semantic views, the Cortex Agent, RBAC roles, and
+#    exposes the agent in the Snowflake CoWork UI.
 # 2. Uploads the 5 Cortex Agent skills to the named stage so the deployed agent
 #    can load them at runtime (server-side skills — see README).
 # 3. Runs verification queries and prints a summary.
@@ -112,6 +113,9 @@ Next steps (all from the command line — no Snowsight needed):
   # Or query a semantic view directly:
   cortex analyst query "Which segments have the highest dislocation score?" \\
     --view ${DATABASE}.${SCHEMA}.SV_DISLOCATION
+
+  # Or open the agent in the Snowflake CoWork UI (already exposed by setup):
+  #   https://ai.snowflake.com   (Snowsight: AI & ML » Agents)
 
 Optional governance module (adds dynamic PII masking):
   snow sql -c ${CLI_CONNECTION_NAME} -f sql/optional-pii_masking.sql
