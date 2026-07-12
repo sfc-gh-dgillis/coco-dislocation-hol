@@ -304,7 +304,7 @@ cp .env/dislocation.env.template .env/dislocation.env   # set CLI_CONNECTION_NAM
 
 Object names (database, schema, warehouse, stage) are parameterized via `<% ctx.env.X %>` and resolved from `.env` at deploy time — the same files deploy to any database/schema with no SQL editing.
 
-**Expected:** 85 geographies (4 states), 12 segments, ~11,000 policies; 3 semantic views; 1 agent; 5 skill files on the stage; a mix of CRITICAL/HIGH/MEDIUM/LOW for Florida.
+**Expected:** 44 geographies (5 states), 12 segments, ~5,000 policies; 3 semantic views; 1 agent; 5 skill files on the stage; a mix of CRITICAL/HIGH/MEDIUM/LOW for Florida.
 
 ## Repository layout
 
