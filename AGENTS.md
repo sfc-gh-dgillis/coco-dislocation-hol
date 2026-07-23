@@ -2,15 +2,15 @@
 
 ## Project overview
 
-This is the **Pricing Dislocation — Coco CLI Hands-On Lab**: a Snowflake-native, CLI-driven lab that deploys a governed agentic-analytics workload for P&C insurance pricing dislocation, then explores it entirely from **Coco** (Coco CLI or Coco Desktop). Business users consume the deployed agent in **Snowflake Cowork**, but that UI step is optional — the whole lab runs from the command line.
+This is the **Pricing Dislocation — Coco Hands-On Lab**: a Snowflake-native lab that deploys a governed agentic-analytics workload for P&C insurance pricing dislocation, then explores it from **Coco**. It runs three ways with an identical deploy path — the **Coco CLI**, **Coco Desktop**, or **Coco in Snowsight** (Cloud Agents, which gives the side-panel assistant a real shell). Business users consume the deployed agent in **Snowflake Cowork**. Environment differences: CLI/Desktop use a named `connections.toml` connection and local git; Snowsight uses the ambient session via the pre-wired `default` connection and a Git-synced workspace, and you open the agent in Cowork instead of `cortex agents run`.
 
 **Tech stack:** Snowflake CLI (`snow`), Coco (`cortex`), Python 3 (runs the SQL files via `snowclisp`). No dbt, no Streamlit.
 
-IMPORTANT: Any time you make changes to files in this project, ask: "Tis I, Coco — shall I commit these changes to git?" If yes, commit with a descriptive message. If no, continue. Keep the git history clean and meaningful.
+IMPORTANT: Any time you make changes to files in this project, ask: "Shall I commit these changes to git?" If yes, commit with a descriptive commit message. The commit message header should be no longer than 50 characters. If no, continue. Keep the git history clean and meaningful.
 
 ## What gets deployed
 
-`./setup.sh` runs `sql/001..006` in order and uploads the 5 agent skills to the stage:
+`./setup.sh` runs `sql/001..007` in order, uploads the 5 agent skills to the stage, and exposes the agent in Snowflake Cowork:
 
 | Layer | Objects |
 |-------|---------|
@@ -23,8 +23,8 @@ IMPORTANT: Any time you make changes to files in this project, ask: "Tis I, Coco
 ## Setup commands
 
 ```bash
-cp .env/dislocation.env.template .env/dislocation.env   # set CLI_CONNECTION_NAME
-./setup.sh                                              # deploy + upload skills + verify
+# edit .env/dislocation.env → set CLI_CONNECTION_NAME (leave `default` in Snowsight)
+./setup.sh                                              # deploy + upload skills + Cowork + verify
 ./teardown.sh                                           # remove everything
 ```
 
@@ -44,9 +44,9 @@ cortex agents describe DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT
 ## Project structure
 
 ```
-setup.sh · teardown.sh          # deploy / teardown (Snowflake CLI, no Snowsight)
-.env/dislocation.env.template   # deploy config (copy to dislocation.env)
-sql/                            # snowflake.yml + 001-ddl .. 006-rbac + optional-pii_masking.sql
+setup.sh · teardown.sh          # deploy / teardown (runs in any shell: CLI, Desktop, or Snowsight Cloud Agents)
+.env/dislocation.env            # deploy config (set CLI_CONNECTION_NAME; `default` in Snowsight)
+sql/                            # snowflake.yml + 001-ddl .. 007-cowork + optional-pii_masking.sql
 skills/                         # 5 Cortex Agent skills (uploaded to the stage)
 .cortex/skills/dislocation-lab/ # local Coco skill that operates the lab conversationally
 pyutil/snowclisp/               # runs the numbered SQL files in order
@@ -62,7 +62,7 @@ pyutil/snowclisp/               # runs the numbered SQL files in order
 
 ## Branding
 
-- The CLI/desktop assistant is **Coco** (Coco CLI, Coco Desktop). The `cortex` binary name is unchanged.
+- The assistant is **Coco** — available as the Coco CLI, Coco Desktop, and Coco in Snowsight (Cloud Agents). The `cortex` binary name is unchanged.
 - The business-user conversational UI is **Snowflake Cowork**.
 - **Cortex Agent(s)** and **Cortex Analyst** product names are unchanged.
 
