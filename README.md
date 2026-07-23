@@ -95,39 +95,39 @@ Coco supports multiple LLM models.
 
 **Expected:** Coco switches models. Good moment to talk through tradeoffs — start with `auto` (Coco picks the best available), use Opus for complex reasoning, Sonnet for fast iteration. Models require regional availability; enable [cross-region inference](https://docs.snowflake.com/en/user-guide/snowflake-cortex/llm-functions#cross-region-inference) (`CORTEX_ENABLED_CROSS_REGION`, ACCOUNTADMIN) if a model isn't in your region.
 
-> **In Snowsight:** use the model picker at the top of the CoCo panel instead of `/model`; on the CLI you can also launch with `cortex --model <id>`.
+> **In Snowsight:** use the model picker at the bottom of the CoCo panel instead of `/model`; on the CLI you can also launch with `cortex --model <id>`.
 
 ### Prompt 2 — Explore the project
 
-```
-@AGENTS.md @sql/005-agent.sql What does this lab deploy, and how does the agent get its skills?
+```text
+What does this lab deploy, and how does the agent get its skills?
 ```
 
-**Expected:** The `@` prefix injects each file's contents directly into the prompt — no copy-paste. Coco summarizes the stack (tables → adapter views → semantic views → agent + 5 skills → RBAC → Cowork exposure) and explains that the agent loads its skills server-side from a named stage.
+**Expected:** Coco will describe the build process through `setup.sh` as well as how the agent gets its skills from the skills directory.
+
+```
+@sql/005-agent.sql Talk to me about this file - what is it doing?
+```
+
+**Expected:** The `@` prefix injects each file's contents directly into the prompt — no copy-paste. Coco summarizes the agent structure.
 
 > **Aside — skills.** Coco ships with **built-in skills** (data-quality, lineage, trust-center, and more) and supports **custom skills**. This repo includes a project skill at `.cortex/skills/dislocation-lab/SKILL.md` that knows how to deploy, verify, reset, and drive this lab. Invoke a skill explicitly with `$` (e.g. `$data-quality`), or let Coco auto-activate it. Run `/skill list` to see them all.
 
 ### Prompt 3 — Deploy the lab
 
-```
+Issue the following prompt to setup the lab.
+
+> If using Snowsight, switch your session role to ACCOUNTADMIN before running.
+
+```text
 Set up the dislocation lab in my Snowflake account.
 ```
 
-**Expected:** The `dislocation-lab` skill activates and runs the deploy: it confirms `.env/dislocation.env` is configured, then runs `./setup.sh`, which executes `sql/001..007` in order via `snowclisp`, uploads the 5 agent skills to the stage, exposes the agent in Snowflake Cowork, and verifies row counts, semantic views, skills-on-stage, and the Florida severity distribution. No commands to memorize.
+**Expected:** The `dislocation-lab` activates and runs the deploy: it confirms `.env/dislocation.env` is configured, then runs `./setup.sh`, which executes `sql/001..007` in order via `snowclisp`, uploads the 5 agent skills to the stage, exposes the agent in Snowflake Cowork, and verifies row counts, semantic views, skills-on-stage, and the Florida severity distribution. No commands to memorize.
 
 > **In Snowsight:** identical — the Cloud Agents container runs `./setup.sh` for you. The `default` connection targets your ambient Snowsight session, so there's nothing to configure.
 >
 > If you'd rather run it yourself: edit `.env/dislocation.env` (set `CLI_CONNECTION_NAME`), then `./setup.sh`.
-
-### Prompt 4 — Cut a dev branch
-
-```
-Create a branch called dislocation-lab-dev and switch to it.
-```
-
-**Expected:** Coco runs `git checkout -b dislocation-lab-dev` natively — no leaving Coco. Reinforces that Coco is a full dev environment with built-in git.
-
-> **In Snowsight:** the container's `git` works the same; you can also create/switch branches from the Workspaces **Changes** tab. Commits pushed either way land on the same remote branch.
 
 ---
 
@@ -152,6 +152,8 @@ $data-quality Run a quick quality scan on the lab's dimension and fact tables in
 **Expected:** The `#` prefix auto-injects the table's column schema and a sample of rows, so Coco sees exact columns without a `DESCRIBE`. It describes the table and runs a per-state count against Snowflake.
 
 > **Aside — `#` table mentions.** `#DB.SCHEMA.TABLE` injects a table's schema and sample rows into the prompt. Mention several tables in one prompt to give Coco join context. You'll use this again in Acts 3–4.
+> 
+> # Table mentions only inject in the CLI.
 
 ### Prompt 7 — Trace lineage
 
