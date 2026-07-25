@@ -2,7 +2,7 @@
 
 A hands-on lab for **Coco** that you can run three ways — the **Coco CLI**, **Coco Desktop**, or **Coco in Snowsight** (Cloud Agents). You stand up a governed, agentic pricing-dislocation workload in your own Snowflake account, then explore it, extend it, and govern it — all from Coco. Business users consume the finished agent in **Snowflake Cowork**.
 
-The lab is identical in every environment: the same repo, the same `dislocation-lab` skill, and the same one-command deploy (`./setup.sh`). Only three things differ by environment — how you get the repo in front of Coco, how Coco authenticates to Snowflake, and how you open the finished agent. Those differences are summarized once below and called out inline where they matter.
+The lab is identical in every environment: the same repo, the same `dislocation-lab` skill for set, and the same one-command deploy (`./setup.sh`). Only three things differ by environment — how you get the repo in front of Coco, how Coco authenticates to Snowflake, and how you open the finished agent. Those differences are summarized once below and called out inline where they matter.
 
 > **First time?** See the [Setup & Reference appendix](#appendix-setup--reference) for one-time configuration, including [Running in Snowsight (Cloud Agents)](#running-in-snowsight-cloud-agents).
 >
@@ -25,7 +25,7 @@ Coco is one assistant with three front ends. Pick whichever matches how you work
 | **Ask the agent** | `cortex agents run …` | `cortex agents run …` | Open the agent in **Snowflake Cowork** (AI & ML » Agents) |
 | **Git** | local `git` CLI | local `git` CLI | `git` in the container **or** the Workspaces Git UI |
 
-**Cloud Agents** (Public Preview, Commercial/KSA) runs each Snowsight CoCo session in an isolated container with a real shell, Python, and web search — so `./setup.sh`, `snow`, `python3`/snowclisp, `git`, and `cortex` all work exactly as they do on the CLI. See [Running in Snowsight (Cloud Agents)](#running-in-snowsight-cloud-agents) for details and caveats.
+**Cloud Agents** (Public Preview, Commercial/KSA) runs each Snowsight CoCo session in an isolated container with a real shell, Python, the snow CLI and web search — so `./setup.sh`, `snow`, `python3`/snowclisp, `git`, and `cortex` all work exactly as they do on the CLI. See [Running in Snowsight (Cloud Agents)](#running-in-snowsight-cloud-agents) for details and caveats.
 
 ---
 
@@ -34,8 +34,6 @@ Coco is one assistant with three front ends. Pick whichever matches how you work
 **Scenario:** You're standing up an agentic dislocation-analysis workload for a P&C insurer. You'll deploy it, interrogate the data and the governed semantic layer, ask a deployed agent business questions, extend the model, and prove governance — all from Coco.
 
 **Repo:** `coco-dislocation-hol` (synthetic FL/TX/LA/CA property book)
-
-**Total time:** ~12–15 minutes
 
 ---
 
@@ -50,22 +48,16 @@ Run through this before each walkthrough to ensure a clean starting state. Do th
 
 **Snowsight (Cloud Agents)**
 
-1. Create a **Git-synced workspace** from the repo URL (Projects » Workspaces » *From Git repository*; needs an API integration). See [Running in Snowsight](#running-in-snowsight-cloud-agents).
+1. Create a **Git-synced workspace** from the repo URL (Projects » Workspaces » *From Git repository*; needs an API integration). See [Running in Snowsight](#running-in-snowsight-cloud-agents). If using this within a dataops.live lab, this is all handled for you and should be pre-existing.
 2. Open the **CoCo** side panel — the Cloud Agents container starts automatically.
 3. Leave `.env/dislocation.env` with `CLI_CONNECTION_NAME=default` (the ambient Snowsight session).
-
-**Shared (all environments)**
-
-4. **Reset to a clean state** — tell Coco *"reset the lab and switch to main"*. The `dislocation-lab` skill switches to `main` and (with your confirmation) tears down any prior Snowflake objects so the deploy step is a live moment.
-5. **Verify your connection** — ask Coco to *"verify my Snowflake connection"*.
+4. Switch role to ACCOUNTADMIN. 
 
 > **Important:** Don't run `./setup.sh` before the walkthrough — Act 1 deploys live as a demo moment.
 
 ---
 
 ## Lab Overview
-
-You go from an empty account to a governed, agentic dislocation workload you can question in natural language — all from Coco in ~15 minutes.
 
 **Data domain:** a synthetic multi-state property insurance book (FL, TX, LA, CA) — ~11,000 policies, 12 segments, 85 counties, two rate-filing scenarios.
 
@@ -93,7 +85,7 @@ Coco supports multiple LLM models.
 /model claude-opus-4-8
 ```
 
-**Expected:** Coco switches models. Good moment to talk through tradeoffs — start with `auto` (Coco picks the best available), use Opus for complex reasoning, Sonnet for fast iteration. Models require regional availability; enable [cross-region inference](https://docs.snowflake.com/en/user-guide/snowflake-cortex/llm-functions#cross-region-inference) (`CORTEX_ENABLED_CROSS_REGION`, ACCOUNTADMIN) if a model isn't in your region.
+**Expected:** Coco switches models.
 
 > **In Snowsight:** use the model picker at the bottom of the CoCo panel instead of `/model`; on the CLI you can also launch with `cortex --model <id>`.
 
@@ -117,13 +109,13 @@ What does this lab deploy, and how does the agent get its skills?
 
 Issue the following prompt to set up the lab.
 
-> If using Snowsight, switch your session role to ACCOUNTADMIN before running.
+> If using Snowsight, be sure to switch your session role to ACCOUNTADMIN before running.
 
 ```text
 Set up the dislocation lab in my Snowflake account.
 ```
 
-**Expected:** The `dislocation-lab` activates and runs the deploy: it confirms `.env/dislocation.env` is configured, then runs `./setup.sh`, which executes `sql/001..007` in order via the `snowclisp` python program, uploads the 5 agent skills to the stage, exposes the agent in Snowflake Cowork, and verifies row counts, semantic views, skills-on-stage, and the Florida severity distribution. No commands to memorize.
+**Expected:** The `dislocation-lab` activates and runs the deployment: it confirms `.env/dislocation.env` is configured, then runs `./setup.sh`, which executes `sql/001..007` in order via the `snowclisp` python program, uploads the 5 agent skills to the stage, exposes the agent in Snowflake Cowork, and verifies row counts, semantic views, skills-on-stage, and the Florida severity distribution. No commands to memorize.
 
 > **In Snowsight:** identical — the Cloud Agents container runs `./setup.sh` for you. The `default` connection targets your ambient Snowsight session, so there's nothing to configure.
 >
@@ -137,7 +129,7 @@ Set up the dislocation lab in my Snowflake account.
 
 ### Prompt 5 — Data quality scan
 
-Invoke skills the data quality skill to performa a data quality scan. 
+Invoke the data quality skill to performa a data quality scan. 
 
 - **CLI** - Invoke skills with `$` - invoke data quality with: `$data-quality`
 - **Coco Desktop** - Use the skill selector in the prompt dialogue box
@@ -149,24 +141,27 @@ Input the following prompt after invoking the skill:
 Run a quick quality scan on the lab's dimension and fact tables in DISLOCATION_DEMO.CORE — null rates on key columns, row counts, and anything that looks off. Give me a plain-English summary.
 ```
 
-**Expected:** The data-quality skill identifies the tables, runs targeted null/row-count/anomaly checks, and returns a plain-English health summary — no hand-written SQL.
+**Expected:** The data-quality skill identifies the tables, runs targeted null/row-count/anomaly checks, and returns a plain-English health summary — no handwritten SQL.
 
 ### Prompt 6 — Inspect the raw data
 
-```
+You can use CoCo to do ad-hoc analysis in natural language.
+
+- **CLI:** - Use # to search through databases and schemas rapidly. 
+- **Coco Desktop / Snowsight:** - Use the Database Explorer to browse db objects
+
+Input the following prompt:
+
+```text
 #DISLOCATION_DEMO.CORE.DIM_POLICY What does the policy data look like, and how many policies exist per state?
 ```
 
-**Expected:** The `#` prefix auto-injects the table's column schema and a sample of rows, so Coco sees exact columns without a `DESCRIBE`. It describes the table and runs a per-state count against Snowflake.
-
-> **Aside — `#` table mentions.** `#DB.SCHEMA.TABLE` injects a table's schema and sample rows into the prompt. Mention several tables in one prompt to give Coco join context. You'll use this again in Acts 3–4.
-> 
-> # Table mentions only inject in the CLI.
+**Expected:** It describes the table and runs a per-state count against Snowflake.
 
 ### Prompt 7 — Trace lineage
 
 ```
-$lineage Trace the lineage of DISLOCATION_DEMO.CORE.SV_DISLOCATION back to its source tables.
+$lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 ```
 
 **Expected:** The lineage skill maps `SV_DISLOCATION → VW_DISLOCATION_ANALYSIS → FACT_*/DIM_*`, showing how the semantic view the agent uses is built from the adapter view over the base tables.
