@@ -115,7 +115,7 @@ What does this lab deploy, and how does the agent get its skills?
 
 ### Prompt 3 — Deploy the lab
 
-Issue the following prompt to setup the lab.
+Issue the following prompt to set up the lab.
 
 > If using Snowsight, switch your session role to ACCOUNTADMIN before running.
 
@@ -123,11 +123,11 @@ Issue the following prompt to setup the lab.
 Set up the dislocation lab in my Snowflake account.
 ```
 
-**Expected:** The `dislocation-lab` activates and runs the deploy: it confirms `.env/dislocation.env` is configured, then runs `./setup.sh`, which executes `sql/001..007` in order via `snowclisp`, uploads the 5 agent skills to the stage, exposes the agent in Snowflake Cowork, and verifies row counts, semantic views, skills-on-stage, and the Florida severity distribution. No commands to memorize.
+**Expected:** The `dislocation-lab` activates and runs the deploy: it confirms `.env/dislocation.env` is configured, then runs `./setup.sh`, which executes `sql/001..007` in order via the `snowclisp` python program, uploads the 5 agent skills to the stage, exposes the agent in Snowflake Cowork, and verifies row counts, semantic views, skills-on-stage, and the Florida severity distribution. No commands to memorize.
 
 > **In Snowsight:** identical — the Cloud Agents container runs `./setup.sh` for you. The `default` connection targets your ambient Snowsight session, so there's nothing to configure.
 >
-> If you'd rather run it yourself: edit `.env/dislocation.env` (set `CLI_CONNECTION_NAME`), then `./setup.sh`.
+> If you'd rather not use the skill and run it yourself: edit `.env/dislocation.env` (set `CLI_CONNECTION_NAME`), then `./setup.sh`.
 
 ---
 
@@ -137,8 +137,16 @@ Set up the dislocation lab in my Snowflake account.
 
 ### Prompt 5 — Data quality scan
 
-```
-$data-quality Run a quick quality scan on the lab's dimension and fact tables in DISLOCATION_DEMO.CORE — null rates on key columns, row counts, and anything that looks off. Give me a plain-English summary.
+Invoke skills the data quality skill to performa a data quality scan. 
+
+- **CLI** - Invoke skills with `$` - invoke data quality with: `$data-quality`
+- **Coco Desktop** - Use the skill selector in the prompt dialogue box
+- **Snowsight** - Use `/` in the Coco side panel to invoke the data-quality skill 
+
+Input the following prompt after invoking the skill:
+
+```text
+Run a quick quality scan on the lab's dimension and fact tables in DISLOCATION_DEMO.CORE — null rates on key columns, row counts, and anything that looks off. Give me a plain-English summary.
 ```
 
 **Expected:** The data-quality skill identifies the tables, runs targeted null/row-count/anomaly checks, and returns a plain-English health summary — no hand-written SQL.
