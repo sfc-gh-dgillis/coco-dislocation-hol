@@ -41,6 +41,13 @@ Coco is one assistant with three front ends. Pick whichever matches how you work
 
 Run through this before each walkthrough to ensure a clean starting state. Do the onboarding for your environment, then the shared steps.
 
+**Snowflake DataOps.live Hands-on Lab**
+
+Your environment is pre-configured. 
+
+1. Login to Snowsight using your given username and password.
+2. Navigate in Snowsight to Workspaces → coco-dislocation-hol, and you will see the fully populated code repository.
+
 **CLI / Coco Desktop**
 
 1. `git clone` the repo and open Coco in the `coco-dislocation-hol` project root.
@@ -129,7 +136,7 @@ Set up the dislocation lab in my Snowflake account.
 
 ### Prompt 5 — Data quality scan
 
-Invoke the data quality skill to performa a data quality scan. 
+Invoke the data quality skill to perform a data quality scan. 
 
 - **CLI** - Invoke skills with `$` - invoke data quality with: `$data-quality`
 - **Coco Desktop** - Use the skill selector in the prompt dialogue box
@@ -160,15 +167,15 @@ Input the following prompt:
 
 ### Prompt 7 — Trace lineage
 
-```
+```text
 $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 ```
 
-**Expected:** The lineage skill maps `SV_DISLOCATION → VW_DISLOCATION_ANALYSIS → FACT_*/DIM_*`, showing how the semantic view the agent uses is built from the adapter view over the base tables.
+**Expected:** The lineage skill maps `7 DIM_*/FACT_* tables → VW_DISLOCATION_ANALYSIS → SV_DISLOCATION`, showing the adapter view reads from all seven base tables and feeds the semantic view the agent consumes.
 
 ### Prompt 8 — Understand the scoring view
 
-```
+```text
 #DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS Explain how the dislocation score is calculated and what the severity bands mean.
 ```
 
