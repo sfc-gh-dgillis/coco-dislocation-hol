@@ -71,9 +71,9 @@ Your environment is pre-configured.
 **The arc follows five acts:**
 
 - **Act 1 — Orientation & Deploy (~3 min):** pick a model, explore the repo, deploy the whole stack via the `dislocation-lab` skill.
-- **Act 2 — Explore the data & governed layer (~3 min):** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, `$lineage` to trace the semantic view back to sources, and `$trust-center` for account security posture.
+- **Act 2 — Explore the data & governed layer (~3 min):** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, and `$lineage` to trace the semantic view back to sources.
 - **Act 3 — Ask the agent (~3 min):** question the deployed agent — in Snowflake Cowork (Snowsight) or via `cortex agents run` (CLI/Desktop) — and `cortex analyst query` against the semantic views.
-- **Act 4 — Governance (~3 min):** RBAC role switch, optional dynamic PII masking, session guardrails (RSS read-only) — the highest-priority act if you're short on time.
+- **Act 4 — Governance (~3 min):** `$trust-center` for account security posture, RBAC role switch, optional dynamic PII masking, session guardrails (RSS read-only) — the highest-priority act if you're short on time.
 - **Act 5 — Extend, iterate & commit (~3 min):** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, save the convention to memory as a rule, rebuild correctly using an `@` style reference, `/compact`, then commit with an auto-generated message.
 
 **Capabilities demonstrated:** built-in and custom skills (`$data-quality`, `$lineage`, `$trust-center`, `dislocation-lab`), `@` file mentions and `#` table mentions for context injection, direct SQL execution, `cortex agents run` / `cortex analyst query`, memory rules (`cortex memory`), session guardrails / RSS (`/guardrails`), git, session management (`/model`, `/fork`, `/rewind`, `/compact`), and iterative problem-solving.
@@ -186,20 +186,6 @@ $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 
 **Expected:** With the view's columns injected, CoCo explains the weighted composite (rate change, lapse, loss ratio, concentration, competitive position) and the CRITICAL/HIGH/MEDIUM/LOW bands.
 
-### Prompt 8 — Check the account's security posture
-
-CoCo governs the *account*, not just this workload. Invoke the Trust Center skill to summarize Snowflake's built-in security scanners.
-
-- **CLI:** invoke with `$trust-center`
-- **CoCo Desktop:** use the skill selector in the prompt dialogue box
-- **Snowsight:** use `/` in the CoCo side panel to invoke trust-center
-
-```text
-$trust-center Summarize the current security findings for my account — list anything CRITICAL or HIGH by severity, and note whether the checks relevant to this lab (roles and grants) look clean.
-```
-
-**Expected:** The trust-center skill reads Snowflake's Trust Center scanners (Security Essentials is on by default) and returns a prioritized, plain-English summary of findings by severity — reinforcing that the same assistant that explores your data can also assess how the account is secured.
-
 ---
 
 ## Act 3 — Ask the agent (~3 min)
@@ -212,7 +198,7 @@ The deployed agent is `DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT`. `setup
 
 **On the CLI / CoCo Desktop:** reach the same agent with `cortex agents run` (tip: prefix a command with `!` inside a CoCo session to run it in-line, or use a second terminal).
 
-### Prompt 9 — Find dislocation
+### Prompt 8 — Find dislocation
 
 Cowork: *"Find pricing dislocation in Florida property"* — or from a shell:
 
@@ -222,7 +208,7 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Find pricing
 
 **Expected:** A ranked table of FL segments with scores, severity bands, rate changes, and lapse propensity — plus drivers and implications. The agent routed to the `dislocation-score` skill.
 
-### Prompt 10 — Compare states & explain drivers
+### Prompt 9 — Compare states & explain drivers
 
 Cowork: *"Compare dislocation risk across all states"*, then *"Why is Louisiana showing so many critical segments?"* — or from a shell:
 
@@ -233,7 +219,7 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louis
 
 **Expected:** A state-by-state comparison, then a driver decomposition — same framework, different peril mechanisms per state.
 
-### Prompt 11 — Query the semantic view directly
+### Prompt 10 — Query the semantic view directly
 
 ```
 cortex analyst query "Which segments combine the highest rate increase with the highest lapse propensity in Florida?" --view DISLOCATION_DEMO.CORE.SV_DISLOCATION
@@ -246,6 +232,20 @@ cortex analyst query "Which segments combine the highest rate increase with the 
 ## Act 4 — Governance (~3 min)
 
 > **Story:** "Before we extend anything, prove the guardrails hold — this is the act you never want to skip."
+
+### Prompt 11 — Check the account's security posture
+
+Governance starts with knowing where you stand. Invoke the Trust Center skill to summarize Snowflake's built-in security scanners for the whole account.
+
+- **CLI:** invoke with `$trust-center`
+- **CoCo Desktop:** use the skill selector in the prompt dialogue box
+- **Snowsight:** use `/` in the CoCo side panel to invoke trust-center
+
+```text
+$trust-center Summarize the current security findings for my account — list anything CRITICAL or HIGH by severity, and note whether the checks relevant to this lab (roles and grants) look clean.
+```
+
+**Expected:** The trust-center skill reads Snowflake's Trust Center scanners (Security Essentials is on by default) and returns a prioritized, plain-English summary of findings by severity — account-wide posture before we drill into this lab's RBAC, masking, and session guardrails.
 
 ### Prompt 12 — Show RBAC differences
 
