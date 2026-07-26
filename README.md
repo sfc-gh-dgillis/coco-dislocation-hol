@@ -210,10 +210,15 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Find pricing
 
 ### Prompt 9 — Compare states & explain drivers
 
-Cowork: *"Compare dislocation risk across all states"*, then *"Why is Louisiana showing so many critical segments?"* — or from a shell:
+Cowork: *"Compare dislocation risk across all states"* — or from a shell:
 
-```
+```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Compare dislocation risk across all states"
+```
+
+Cowork: *"Why is Louisiana showing so many critical segments?"* — or from a shell
+
+```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louisiana showing so many critical segments?"
 ```
 
@@ -221,7 +226,7 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louis
 
 ### Prompt 10 — Query the semantic view directly
 
-```
+```shell
 cortex analyst query "Which segments combine the highest rate increase with the highest lapse propensity in Florida?" --view DISLOCATION_DEMO.CORE.SV_DISLOCATION
 ```
 
@@ -249,7 +254,7 @@ $trust-center Summarize the current security findings for my account — list an
 
 ### Prompt 12 — Show RBAC differences
 
-```
+```text
 Using my connection, show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both.
 ```
 
@@ -367,9 +372,9 @@ If you asked the agent from the CLI or CoCo Desktop, close the loop by opening t
 
 ---
 
-## Closing talking points
+## Closing Points
 
-1. **From zero to governed agent in ~15 minutes**, in whichever CoCo you prefer — terminal, desktop, or Snowsight.
+1. **From zero to governed agent**, in whichever CoCo you prefer — terminal, desktop, or Snowsight.
 2. **One lab, three front ends** — same repo, same skill, same `./setup.sh`; Snowsight's Cloud Agents container runs the exact same flow.
 3. **Skills do the heavy lifting** — `$data-quality`, `$lineage`, and the custom `dislocation-lab` skill turn intent into the right commands.
 4. **`@` and `#` context injection** — files and Snowflake tables piped straight into the prompt, so CoCo writes accurate SQL and views without guessing.
