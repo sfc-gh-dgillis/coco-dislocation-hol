@@ -70,13 +70,13 @@ Your environment is pre-configured.
 
 **The arc follows five acts:**
 
-- **Act 1 — Orientation & Deploy (~3 min):** pick a model, explore the repo with `@` file mentions, deploy the whole stack via the `dislocation-lab` skill, cut a dev branch.
-- **Act 2 — Explore the data & governed layer (~3 min):** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, `$lineage` to trace the semantic view back to sources.
+- **Act 1 — Orientation & Deploy (~3 min):** pick a model, explore the repo, deploy the whole stack via the `dislocation-lab` skill.
+- **Act 2 — Explore the data & governed layer (~3 min):** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, `$lineage` to trace the semantic view back to sources, and `$trust-center` for account security posture.
 - **Act 3 — Ask the agent (~3 min):** question the deployed agent — in Snowflake Cowork (Snowsight) or via `cortex agents run` (CLI/Desktop) — and `cortex analyst query` against the semantic views.
-- **Act 4 — Extend & iterate (~3 min):** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, rebuild correctly using an `@` style reference, `/compact` the session.
-- **Act 5 — Governance & git (~2 min):** RBAC role switch, optional dynamic PII masking, commit with an auto-generated message.
+- **Act 4 — Extend & iterate (~3 min):** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, save the convention to memory as a rule, rebuild correctly using an `@` style reference, `/compact` the session.
+- **Act 5 — Governance & git (~2 min):** RBAC role switch, optional dynamic PII masking, session guardrails (RSS read-only), commit with an auto-generated message.
 
-**Capabilities demonstrated:** built-in and custom skills (`$data-quality`, `$lineage`, `$trust-center`, `dislocation-lab`), `@` file mentions and `#` table mentions for context injection, direct SQL execution, `cortex agents run` / `cortex analyst query`, git, session management (`/model`, `/fork`, `/rewind`, `/compact`), and iterative problem-solving.
+**Capabilities demonstrated:** built-in and custom skills (`$data-quality`, `$lineage`, `$trust-center`, `dislocation-lab`), `@` file mentions and `#` table mentions for context injection, direct SQL execution, `cortex agents run` / `cortex analyst query`, memory rules (`cortex memory`), session guardrails / RSS (`/guardrails`), git, session management (`/model`, `/fork`, `/rewind`, `/compact`), and iterative problem-solving.
 
 ---
 
@@ -134,7 +134,7 @@ Set up the dislocation lab in my Snowflake account.
 
 > **Story:** "Before we trust the scores, let's check the data and see how the logic is layered."
 
-### Prompt 5 — Data quality scan
+### Prompt 4 — Data quality scan
 
 Invoke the data quality skill to perform a data quality scan. 
 
@@ -150,7 +150,7 @@ Run a quick quality scan on the lab's dimension and fact tables in DISLOCATION_D
 
 **Expected:** The data-quality skill identifies the tables, runs targeted null/row-count/anomaly checks, and returns a plain-English health summary — no handwritten SQL.
 
-### Prompt 6 — Inspect the raw data
+### Prompt 5 — Inspect the raw data
 
 You can use CoCo to do ad-hoc analysis in natural language.
 
@@ -165,7 +165,7 @@ Input the following prompt:
 
 **Expected:** It describes the table and runs a per-state count against Snowflake.
 
-### Prompt 7 — Trace lineage
+### Prompt 6 — Trace lineage
 
 ```text
 $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
@@ -173,13 +173,27 @@ $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 
 **Expected:** The lineage skill maps `7 DIM_*/FACT_* tables → VW_DISLOCATION_ANALYSIS → SV_DISLOCATION`, showing the adapter view reads from all seven base tables and feeds the semantic view the agent consumes.
 
-### Prompt 8 — Understand the scoring view
+### Prompt 7 — Understand the scoring view
 
 ```text
 #DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS Explain how the dislocation score is calculated and what the severity bands mean.
 ```
 
 **Expected:** With the view's columns injected, Coco explains the weighted composite (rate change, lapse, loss ratio, concentration, competitive position) and the CRITICAL/HIGH/MEDIUM/LOW bands.
+
+### Prompt 8 — Check the account's security posture
+
+Coco governs the *account*, not just this workload. Invoke the Trust Center skill to summarize Snowflake's built-in security scanners.
+
+- **CLI:** invoke with `$trust-center`
+- **Coco Desktop:** use the skill selector in the prompt dialogue box
+- **Snowsight:** use `/` in the Coco side panel to invoke trust-center
+
+```text
+$trust-center Summarize the current security findings for my account — list anything CRITICAL or HIGH by severity, and note whether the checks relevant to this lab (roles and grants) look clean.
+```
+
+**Expected:** The trust-center skill reads Snowflake's Trust Center scanners (Security Essentials is on by default) and returns a prioritized, plain-English summary of findings by severity — reinforcing that the same assistant that explores your data can also assess how the account is secured.
 
 ---
 
@@ -260,15 +274,27 @@ Delete anything that "premiumatrisk" prompt created — drop the view in Snowfla
 
 **Expected:** `/rewind` rolls back the *conversation*; the follow-up cleans the *side effects* (dropped view, removed file). Note the distinction: `/rewind` is destructive to conversation only — files/tables/commits need explicit cleanup.
 
-### Prompt 15 — Rebuild correctly
+### Prompt 15 — Teach Coco the convention (memory)
+
+The `premiumatrisk` mistake was avoidable. Instead of restating conventions on every prompt, save them once — Coco's memory persists across sessions and enforces rules on every future turn.
+
+```text
+Remember as a rule: adapter views must use the VW_ prefix, fully-qualified names, and <% ctx.env.X %> templating — never hardcode DISLOCATION_DEMO.
+```
+
+**Expected:** Coco stores it as an enforced rule (`cortex memory remember … --rule`) and confirms. You can list saved rules with `cortex memory list --rule`.
+
+> **All environments:** memory works the same on CLI, Desktop, and Snowsight. Add `-g` to make a rule global across every project, not just this lab.
+
+### Prompt 16 — Rebuild correctly
 
 ```
-@sql/003-views.sql Create a new adapter view VW_PREMIUM_AT_RISK that totals PREMIUM_DELTA and policy count by STATE and COUNTY for the current scenario. Follow the conventions in this file — env templating, naming, and SQL style. Then compile it.
+@sql/003-views.sql Create a new adapter view VW_PREMIUM_AT_RISK that totals PREMIUM_DELTA and policy count by STATE and COUNTY for the current scenario, matching the structure of the views in this file. Then compile it.
 ```
 
-**Expected:** With the real file as a style reference, Coco writes a `<% ctx.env.X %>`-templated `VW_PREMIUM_AT_RISK` that matches the existing naming and formatting, then compiles it.
+**Expected:** Notice this prompt doesn't repeat the naming or templating rules — it doesn't need to. Coco applies them from the rule you just saved, uses the file as a structural reference, and produces a `<% ctx.env.X %>`-templated, `VW_`-prefixed `VW_PREMIUM_AT_RISK`, then compiles it.
 
-### Prompt 16 — Compact the session
+### Prompt 17 — Compact the session
 
 ```
 /compact
@@ -282,7 +308,7 @@ Delete anything that "premiumatrisk" prompt created — drop the view in Snowfla
 
 > **Story:** "Prove the access controls, then commit."
 
-### Prompt 17 — Show RBAC differences
+### Prompt 18 — Show RBAC differences
 
 ```
 Using my connection, show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both.
@@ -290,7 +316,7 @@ Using my connection, show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_
 
 **Expected:** Coco runs the role-scoped queries (`USE ROLE …; USE SECONDARY ROLES NONE; …`) and shows the Director blocked on raw tables while the Analyst has full access — governance enforced by Snowflake, not app code.
 
-### Prompt 18 (optional) — Dynamic PII masking
+### Prompt 19 (optional) — Dynamic PII masking
 
 ```
 Apply the optional PII masking module, then show the same Florida claims query as the Analyst vs the Director role.
@@ -298,7 +324,25 @@ Apply the optional PII masking module, then show the same Florida claims query a
 
 **Expected:** Coco runs `sql/optional-pii_masking.sql`, then the same query returns full claimant/attorney names for the Analyst and `●●●● REDACTED ●●●●` for the Director — same rows, same financials, names masked at the platform layer.
 
-### Prompt 19 — Commit
+### Prompt 20 — Put Coco on a leash with guardrails (RSS)
+
+RBAC governs what *roles* can do. **Guardrails** govern what *Coco itself* can do in this session — a Restricted Session Scope (RSS) enforced by Snowflake, above RBAC. Open the guardrails panel:
+
+```text
+/guardrails
+```
+
+Turn on **SQL read-only** (or activate a named scope that blocks writes) and press **Activate** — the footer shows `[RSS activated]`. Now ask Coco to make a change:
+
+```text
+Drop the VW_PREMIUM_AT_RISK view.
+```
+
+**Expected:** Coco refuses — the DROP fails with a *"Restricted session scope"* error because the active scope permits only `data read`. Reads still work, and git still works (RSS governs SQL, not the shell), so you can still commit next. Deactivate anytime from the same `/guardrails` panel.
+
+> **CLI / Coco Desktop:** `/guardrails` is a CoCo command; you can also start locked-down with `cortex --sql-read-only`. In Snowsight, rely on the RBAC and masking controls above — RSS is a terminal/desktop capability today.
+
+### Prompt 21 — Commit
 
 ```
 Commit all changes with an appropriate message.
@@ -340,6 +384,7 @@ If you asked the agent from the CLI or Coco Desktop, close the loop by opening t
 | Skills not discovered | `LS @DISLOCATION_DEMO.SKILLS.SKILL_STAGE/ PATTERN='.*SKILL\.md';` |
 | Agent errors on model | Enable cross-region inference (see appendix Prerequisites) |
 | Template values not substituted | Ensure `./setup.sh` runs from the repo root so `snow` finds `sql/snowflake.yml` |
+| Coco refuses a SQL write ("Restricted session scope") | An RSS guardrail is active — deactivate or switch scope via `/guardrails` (role switches won't bypass it) |
 | Running low on time | Skip Act 4 and the capstone; go straight to Act 5 |
 
 ---
