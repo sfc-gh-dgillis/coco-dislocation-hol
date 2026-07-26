@@ -86,17 +86,20 @@ Your environment is pre-configured.
 
 ### Prompt 1 — Choose a model
 
-Coco supports multiple LLM models.
+CoCo supports multiple LLM models. Choose the model that best fits your use case. 
 
-```
+- **CLI** - Choose the model by using a `/model` and selecting from the text menu
+- **Coco Desktop / Snowsight** - Use the model selector in the prompt dialogue box
+
+```text
 /model claude-opus-4-8
 ```
 
 **Expected:** Coco switches models.
 
-> **In Snowsight:** use the model picker at the bottom of the CoCo panel instead of `/model`; on the CLI you can also launch with `cortex --model <id>`.
-
 ### Prompt 2 — Explore the project
+
+Input the following prompt to explore the project.
 
 ```text
 What does this lab deploy, and how does the agent get its skills?
@@ -104,15 +107,17 @@ What does this lab deploy, and how does the agent get its skills?
 
 **Expected:** Coco will describe the build process through `setup.sh` as well as how the agent gets its skills from the skills directory.
 
-```
+Get details about the agent deployment sql, input the following prompt:
+
+```text
 @sql/005-agent.sql Talk to me about this file - what is it doing?
 ```
 
 **Expected:** The `@` prefix injects each file's contents directly into the prompt — no copy-paste. Coco summarizes the agent structure.
 
-> **Aside — skills.** Coco ships with **built-in skills** (data-quality, lineage, trust-center, and more) and supports **custom skills**. This repo includes a project skill at `.cortex/skills/dislocation-lab/SKILL.md` that knows how to deploy, verify, reset, and drive this lab. Invoke a skill explicitly with `$` (e.g. `$data-quality`), or let Coco auto-activate it. Run `/skill list` to see them all.
-
 ### Prompt 3 — Deploy the lab
+
+> **Mad Skills!!!** Coco ships with **built-in skills** (data-quality, lineage, trust-center, and more) and supports **custom skills**. This repo includes a project skill at `.cortex/skills/dislocation-lab/SKILL.md` that knows how to deploy, verify, reset, and drive this lab. Invoke a skill explicitly with `$` (e.g. `$data-quality`), or let Coco auto-activate it. Run `/skill list` to see them all.
 
 Issue the following prompt to set up the lab.
 
