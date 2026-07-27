@@ -86,14 +86,14 @@ FROM (VALUES
 -- Add comparison states (small set for context)
 INSERT INTO DIM_GEOGRAPHY (GEOGRAPHY_KEY, STATE, STATE_NAME, COUNTY, REGION, TERRITORY_CODE, COASTAL_FLAG, HAZARD_ZONE)
 VALUES
-(100, 'TX', 'Texas', 'Harris', 'Gulf Coast', 'TX-GC-01', TRUE, 'Coastal High-Risk'),
-(101, 'TX', 'Texas', 'Galveston', 'Gulf Coast', 'TX-GC-02', TRUE, 'Coastal High-Risk'),
-(102, 'TX', 'Texas', 'Dallas', 'North Texas', 'TX-NT-01', FALSE, 'Inland Standard'),
-(103, 'LA', 'Louisiana', 'Orleans', 'Southeast LA', 'LA-SE-01', TRUE, 'Coastal High-Risk'),
-(104, 'LA', 'Louisiana', 'Jefferson', 'Southeast LA', 'LA-SE-02', TRUE, 'Coastal High-Risk'),
-(105, 'SC', 'South Carolina', 'Charleston', 'Lowcountry', 'SC-LC-01', TRUE, 'Coastal Moderate'),
-(106, 'SC', 'South Carolina', 'Horry', 'Grand Strand', 'SC-GS-01', TRUE, 'Coastal Moderate'),
-(107, 'GA', 'Georgia', 'Chatham', 'Coastal GA', 'GA-CG-01', TRUE, 'Coastal Moderate');
+(37, 'TX', 'Texas', 'Harris', 'Gulf Coast', 'TX-GC-01', TRUE, 'Coastal High-Risk'),
+(38, 'TX', 'Texas', 'Galveston', 'Gulf Coast', 'TX-GC-02', TRUE, 'Coastal High-Risk'),
+(39, 'TX', 'Texas', 'Dallas', 'North Texas', 'TX-NT-01', FALSE, 'Inland Standard'),
+(40, 'LA', 'Louisiana', 'Orleans', 'Southeast LA', 'LA-SE-01', TRUE, 'Coastal High-Risk'),
+(41, 'LA', 'Louisiana', 'Jefferson', 'Southeast LA', 'LA-SE-02', TRUE, 'Coastal High-Risk'),
+(42, 'SC', 'South Carolina', 'Charleston', 'Lowcountry', 'SC-LC-01', TRUE, 'Coastal Moderate'),
+(43, 'SC', 'South Carolina', 'Horry', 'Grand Strand', 'SC-GS-01', TRUE, 'Coastal Moderate'),
+(44, 'GA', 'Georgia', 'Chatham', 'Coastal GA', 'GA-CG-01', TRUE, 'Coastal Moderate');
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
@@ -152,7 +152,8 @@ FROM (
     FROM TABLE(GENERATOR(ROWCOUNT => 5000))
 ) gen
 JOIN DIM_SEGMENT s ON s.SEGMENT_KEY = (MOD(gen.row_num, 12) + 1)
-JOIN DIM_GEOGRAPHY g ON g.GEOGRAPHY_KEY = (MOD(gen.row_num, 36) + 1)  -- FL geographies only
+--JOIN DIM_GEOGRAPHY g ON g.GEOGRAPHY_KEY = (MOD(gen.row_num, 36) + 1)  -- FL geographies only
+JOIN DIM_GEOGRAPHY g ON g.GEOGRAPHY_KEY = (MOD(gen.row_num, 44) + 1)  -- All geographies
 ;
 
 
