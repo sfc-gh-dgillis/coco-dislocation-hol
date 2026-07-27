@@ -235,8 +235,8 @@ SELECT
         ELSE 'Rate adequacy correction based on loss experience'
     END AS RATIONALE
 FROM DIM_SEGMENT s
-CROSS JOIN DIM_GEOGRAPHY g
-WHERE g.STATE = 'FL';  -- Florida focus for the scenario
+CROSS JOIN DIM_GEOGRAPHY g;
+-- WHERE g.STATE = 'FL';  -- Florida focus for the scenario
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
@@ -373,8 +373,8 @@ SELECT
     END AS PRICE_SENSITIVITY_SCORE,
     UNIFORM(50, 500, RANDOM()) AS POLICIES_IN_COHORT
 FROM DIM_SEGMENT s
-CROSS JOIN DIM_GEOGRAPHY g
-WHERE g.STATE = 'FL';
+CROSS JOIN DIM_GEOGRAPHY g;
+-- WHERE g.STATE = 'FL';
 
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
