@@ -88,8 +88,10 @@ Your environment is pre-configured.
 
 CoCo supports multiple LLM models. Choose the model that best fits your use case. 
 
-- **CLI** - Choose the model by using a `/model` and selecting from the text menu
+![Model Selector](assets/act1/model-selector.png){: style="width:500px; display: block; margin-left: auto; margin-right: auto;"}
+
 - **CoCo Desktop / Snowsight** - Use the model selector in the prompt dialogue box
+- **CLI** - Choose the model by using a `/model` and selecting from the text menu
 
 ```text
 /model claude-opus-4-8
