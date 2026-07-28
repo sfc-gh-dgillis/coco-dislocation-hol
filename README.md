@@ -33,7 +33,7 @@ CoCo is one assistant with three front ends. Pick whichever matches how you work
 
 **Scenario:** You're standing up an agentic dislocation-analysis workload for a P&C insurer. You'll deploy it, interrogate the data and the governed semantic layer, ask a deployed agent business questions, extend the model, and prove governance — all from CoCo.
 
-**Repo:** `coco-dislocation-hol` (synthetic FL/TX/LA/CA property book)
+**Repo:** [https://github.com/sfc-gh-dgillis/coco-dislocation-hol](https://github.com/sfc-gh-dgillis/coco-dislocation-hol)
 
 ---
 
@@ -66,21 +66,21 @@ Your environment is pre-configured.
 
 ## Lab Overview
 
-**Data domain:** a synthetic multi-state property insurance book (FL, TX, LA, CA) — ~11,000 policies, 12 segments, 85 counties, two rate-filing scenarios.
+**Data domain:** a synthetic multi-state property insurance book (FL, TX, LA, CA) — ~5,000 policies, 12 segments, 85 counties, two rate-filing scenarios.
 
 **The arc follows five acts:**
 
-- **Act 1 — Orientation & Deploy (~3 min):** pick a model, explore the repo, deploy the whole stack via the `dislocation-lab` skill.
-- **Act 2 — Explore the data & governed layer (~3 min):** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, and `$lineage` to trace the semantic view back to sources.
-- **Act 3 — Ask the agent (~3 min):** question the deployed agent — in Snowflake Cowork (Snowsight) or via `cortex agents run` (CLI/Desktop) — and `cortex analyst query` against the semantic views.
-- **Act 4 — Governance (~3 min):** `$trust-center` for account security posture, RBAC role switch, optional dynamic PII masking, session guardrails (RSS read-only) — the highest-priority act if you're short on time.
-- **Act 5 — Extend, iterate & commit (~3 min):** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, save the convention to memory as a rule, rebuild correctly using an `@` style reference, `/compact`, then commit with an auto-generated message.
+- **Act 1 — Orientation & Deploy:** pick a model, explore the repo, deploy the whole stack via the `dislocation-lab` skill.
+- **Act 2 — Explore the data & governed layer:** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, and `$lineage` to trace the semantic view back to sources.
+- **Act 3 — Ask the agent:** question the deployed agent — in Snowflake Cowork (Snowsight) or via `cortex agents run` (CLI/Desktop) — and `cortex analyst query` against the semantic views.
+- **Act 4 — Governance:** `$trust-center` for account security posture, RBAC role switch, dynamic PII masking, end-to-end role proof — the highest-priority act if you're short on time.
+- **Act 5 — Extend, iterate & commit:** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, save the convention to memory as a rule, rebuild correctly using an `@` style reference, `/compact`, then commit with an auto-generated message.
 
 **Capabilities demonstrated:** built-in and custom skills (`$data-quality`, `$lineage`, `$trust-center`, `dislocation-lab`), `@` file mentions and `#` table mentions for context injection, direct SQL execution, `cortex agents run` / `cortex analyst query`, memory rules (`cortex memory`), session guardrails / RSS (`/guardrails`), git, session management (`/model`, `/fork`, `/rewind`, `/compact`), and iterative problem-solving.
 
 ---
 
-## Act 1 — Orientation & Deploy (~3 min)
+## Act 1 — Orientation & Deploy
 
 > **Story:** "Here's a repo that claims to deploy an agentic dislocation workload. Let's understand it, then stand it up."
 
@@ -174,6 +174,8 @@ Input the following prompt:
 
 ### Prompt 6 — Trace lineage
 
+Input the following prompt:
+
 ```text
 $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 ```
@@ -190,21 +192,29 @@ $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 
 ---
 
-## Act 3 — Ask the agent (~3 min)
+## Act 3 — Ask the Agent
 
 > **Story:** "Now the payoff — a governed agent that answers pricing questions in plain English."
 
 The deployed agent is `DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT`. `setup.sh` already exposed it in **Snowflake Cowork** (step `007-cowork.sql`), so it's reachable two ways.
 
-**In Snowsight (recommended there):** open **Snowflake Cowork** — Snowsight » **AI & ML » Agents** (or [ai.snowflake.com](https://ai.snowflake.com)) — select `DISLOCATION_ANALYSIS_AGENT`, and ask the prompts below in the chat UI.
+**In Snowsight:** navigate to **Snowflake Cowork** (or directly with [ai.snowflake.com](https://ai.snowflake.com)) — select `DISLOCATION_ANALYSIS_AGENT`, and ask the prompts below in the chat UI.
+
+![Snowflake Cowork](assets/act3/nav1.png){: style="width:500px; display: block; margin-left: auto; margin-right: auto;"}
 
 **On the CLI / CoCo Desktop:** reach the same agent with `cortex agents run` (tip: prefix a command with `!` inside a CoCo session to run it in-line, or use a second terminal).
 
 ### Prompt 8 — Find dislocation
 
-Cowork: *"Find pricing dislocation in Florida property"* — or from a shell:
+Input the following prompt in Cowork:
 
+```text
+Find pricing dislocation in Florida property
 ```
+
+or from a shell:
+
+```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Find pricing dislocation in Florida property"
 ```
 
@@ -212,13 +222,25 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Find pricing
 
 ### Prompt 9 — Compare states & explain drivers
 
-Cowork: *"Compare dislocation risk across all states"* — or from a shell:
+Input the following prompt in Cowork:
+
+```text
+Compare dislocation risk across all states
+```
+
+or from a shell:
 
 ```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Compare dislocation risk across all states"
 ```
 
-Cowork: *"Why is Louisiana showing so many critical segments?"* — or from a shell
+Input the following prompt in Cowork:
+
+```text
+Why is Louisiana showing so many critical segments?
+``
+
+or from a shell:
 
 ```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louisiana showing so many critical segments?"
@@ -228,65 +250,72 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louis
 
 ### Prompt 10 — Query the semantic view directly
 
+You can also query a semantic view directly from a CoCo panel in Snowsight. Input the following prompt in CoCo:
+
+```text
+query SV_DISLOCATION with Cortex Analyst
+```
+
+or from a shell:
+
 ```shell
 cortex analyst query "Which segments combine the highest rate increase with the highest lapse propensity in Florida?" --view DISLOCATION_DEMO.CORE.SV_DISLOCATION
 ```
 
-**Expected:** Cortex Analyst answers straight off the governed semantic layer — the same logic the agent uses, no agent hop. (In Snowsight, ask CoCo in the panel to *"query SV_DISLOCATION with Cortex Analyst"* if you prefer to stay in the UI.)
+**Expected:** Cortex Analyst answers straight off the governed semantic layer — the same logic the agent uses, no agent hop. (.)
 
 ---
 
-## Act 4 — Governance (~3 min)
+## Act 4 — Governance
 
-> **Story:** "Before we extend anything, prove the guardrails hold — this is the act you never want to skip."
+> **Story:** The data is live and the agent answers questions — now show that access controls actually enforce what they claim.
 
 ### Prompt 11 — Check the account's security posture
 
 Governance starts with knowing where you stand. Invoke the Trust Center skill to summarize Snowflake's built-in security scanners for the whole account.
 
-- **CLI:** invoke with `$trust-center`
+- **Snowsight:** use `/` in the CoCo side panel to invoke the trust-center skill
 - **CoCo Desktop:** use the skill selector in the prompt dialogue box
-- **Snowsight:** use `/` in the CoCo side panel to invoke trust-center
+- **CLI:** invoke with `$trust-center`
 
 ```text
 $trust-center Summarize the current security findings for my account — list anything CRITICAL or HIGH by severity, and note whether the checks relevant to this lab (roles and grants) look clean.
 ```
 
-**Expected:** The trust-center skill reads Snowflake's Trust Center scanners (Security Essentials is on by default) and returns a prioritized, plain-English summary of findings by severity — account-wide posture before we drill into this lab's RBAC, masking, and session guardrails.
+**Expected:** The trust-center skill reads Snowflake's Trust Center scanners (Security Essentials is on by default) and returns a prioritized, plain-English summary of findings by severity — account-wide posture before we drill into this lab's RBAC and masking.
 
 ### Prompt 12 — Show RBAC differences
 
 ```text
-Using my connection, show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both.
+Show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both.
 ```
 
-**Expected:** CoCo runs the role-scoped queries (`USE ROLE …; USE SECONDARY ROLES NONE; …`) and shows the Director blocked on raw tables while the Analyst has full access — governance enforced by Snowflake, not app code.
+**Expected:** CoCo runs the role-scoped queries (`USE ROLE …; USE SECONDARY ROLES NONE; …`) and shows the Director blocked on raw tables while the Analyst has full access — governance enforced by Snowflake's RBAC, not app code.
 
-### Prompt 13 (optional) — Dynamic PII masking
+### Prompt 13 — Dynamic PII masking
 
-```
+```text
 Apply the optional PII masking module, then show the same Florida claims query as the Analyst vs the Director role.
 ```
 
-**Expected:** CoCo runs `sql/optional-pii_masking.sql`, then the same query returns full claimant/attorney names for the Analyst and `●●●● REDACTED ●●●●` for the Director — same rows, same financials, names masked at the platform layer.
+**Expected:** CoCo runs `sql/optional-pii_masking.sql`, then the same query returns full claimant/attorney names for the Analyst and `●●●● REDACTED ●●●●` for the Director — same rows, same financials, names masked at the platform layer. This is Snowflake Dynamic Data Masking: a policy applied once, enforced everywhere, regardless of how the data is accessed.
 
-### Prompt 14 — Put CoCo on a leash with guardrails (RSS)
+### Prompt 14 — Prove the roles hold end-to-end
 
-RBAC governs what *roles* can do. **Guardrails** govern what *CoCo itself* can do in this session — a Restricted Session Scope (RSS) enforced by Snowflake, above RBAC. Open the guardrails panel:
-
-```text
-/guardrails
-```
-
-Turn on **SQL read-only** (or activate a named scope that blocks writes) and press **Activate** — the footer shows `[RSS activated]`. Now ask CoCo to make a change:
+Combine what you've seen. Switch to the Director role and try to access both the governed agent and a raw table in the same turn:
 
 ```text
-Drop the VW_DISLOCATION_ANALYSIS view.
+USE ROLE DISLOCATION_DIRECTOR_RL; Now query VW_CLAIMS_DETAIL for Florida claims over $50K — then try selecting directly from DIM_POLICY.
 ```
 
-**Expected:** CoCo refuses — the DROP fails with a *"Restricted session scope"* error because the active scope permits only `data read`. Reads still work, and git still works (RSS governs SQL, not the shell). Deactivate anytime from the same `/guardrails` panel.
+**Expected:** The view query succeeds (the Director has SELECT on adapter views), but the direct table query fails with an *insufficient privileges* error. The Director can consume governed data products — views, semantic views, the agent — but cannot bypass them to reach raw tables. Switch back to your admin role when done:
 
-> **CLI / CoCo Desktop:** `/guardrails` is a CoCo command; you can also start locked-down with `cortex --sql-read-only`. In Snowsight, rely on the RBAC and masking controls above — RSS is a terminal/desktop capability today.
+```text
+USE ROLE ACCOUNTADMIN;
+```
+
+> **CLI / CoCo Desktop (optional) — Put CoCo on a leash with guardrails (RSS):**
+> RBAC governs what *roles* can do; **Guardrails** govern what *CoCo itself* can do in a session — a Restricted Session Scope (RSS) enforced by Snowflake, above RBAC. Run `/guardrails`, activate **SQL read-only**, then ask CoCo to `Drop the VW_DISLOCATION_ANALYSIS view.` — it refuses with a *"Restricted session scope"* error. RSS is a CLI/Desktop capability today; in Snowsight, the RBAC and masking controls above are your enforcement layer.
 
 ---
 
