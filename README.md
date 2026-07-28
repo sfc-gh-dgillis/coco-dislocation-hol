@@ -82,7 +82,7 @@ Your environment is pre-configured.
 
 ## Act 1 — Orientation & Deploy
 
-> **Story:** "Here's a repo that claims to deploy an agentic dislocation workload. Let's understand it, then stand it up."
+> **Story:** Understand what the repo deploys, then stand up the full stack in one command.
 
 ### Prompt 1 — Choose a model
 
@@ -137,9 +137,9 @@ Set up the dislocation lab in my Snowflake account.
 
 ---
 
-## Act 2 — Explore the data & governed layer (~3 min)
+## Act 2 — Explore the data & governed layer
 
-> **Story:** "Before we trust the scores, let's check the data and see how the logic is layered."
+> **Story:** Validate the data quality and trace how raw tables feed the scoring logic.
 
 ### Prompt 4 — Data quality scan
 
@@ -194,7 +194,7 @@ $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 
 ## Act 3 — Ask the Agent
 
-> **Story:** "Now the payoff — a governed agent that answers pricing questions in plain English."
+> **Story:** Put the deployed agent to work — ask business questions and get answers from the governed semantic layer.
 
 The deployed agent is `DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT`. `setup.sh` already exposed it in **Snowflake Cowork** (step `007-cowork.sql`), so it's reachable two ways.
 
@@ -262,7 +262,7 @@ or from a shell:
 cortex analyst query "Which segments combine the highest rate increase with the highest lapse propensity in Florida?" --view DISLOCATION_DEMO.CORE.SV_DISLOCATION
 ```
 
-**Expected:** Cortex Analyst answers straight off the governed semantic layer — the same logic the agent uses, no agent hop. (.)
+**Expected:** Cortex Analyst answers straight off the governed semantic layer — the same logic the agent uses, no agent hop.
 
 ---
 
@@ -319,9 +319,9 @@ USE ROLE ACCOUNTADMIN;
 
 ---
 
-## Act 5 — Extend, iterate & commit (~3 min)
+## Act 5 — Extend, iterate & commit
 
-> **Story:** "Now add a derived metric — show what happens when it goes sideways — then commit the good version."
+> **Story:** Add a new metric, break it on purpose, undo the damage, then rebuild it correctly and commit.
 
 > **In Snowsight:** the session-management commands below (`/fork`, `/rewind`, `/compact`) and the `!` inline-command trick are CLI / CoCo Desktop conveniences. In the CoCo panel, use the equivalent panel controls (new chat, plan mode, clear) — the *modeling* steps (build, undo the side effects, rebuild) work identically.
 
