@@ -266,9 +266,9 @@ cortex analyst query "Which segments combine the highest rate increase with the 
 
 ---
 
-## Act 4 — Governance (~3 min)
+## Act 4 — Governance
 
-> **Story:** "Before we extend anything, prove the guardrails hold — this is the act you never want to skip."
+> **Story:** The data is live and the agent answers questions — now show that access controls actually enforce what they claim.
 
 ### Prompt 11 — Check the account's security posture
 
