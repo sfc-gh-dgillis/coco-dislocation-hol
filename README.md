@@ -33,7 +33,7 @@ CoCo is one assistant with three front ends. Pick whichever matches how you work
 
 **Scenario:** You're standing up an agentic dislocation-analysis workload for a P&C insurer. You'll deploy it, interrogate the data and the governed semantic layer, ask a deployed agent business questions, extend the model, and prove governance — all from CoCo.
 
-**Repo:** `coco-dislocation-hol` (synthetic FL/TX/LA/CA property book)
+**Repo:** [https://github.com/sfc-gh-dgillis/coco-dislocation-hol](https://github.com/sfc-gh-dgillis/coco-dislocation-hol)
 
 ---
 
@@ -66,21 +66,21 @@ Your environment is pre-configured.
 
 ## Lab Overview
 
-**Data domain:** a synthetic multi-state property insurance book (FL, TX, LA, CA) — ~11,000 policies, 12 segments, 85 counties, two rate-filing scenarios.
+**Data domain:** a synthetic multi-state property insurance book (FL, TX, LA, CA) — ~5,000 policies, 12 segments, 85 counties, two rate-filing scenarios.
 
 **The arc follows five acts:**
 
-- **Act 1 — Orientation & Deploy (~3 min):** pick a model, explore the repo, deploy the whole stack via the `dislocation-lab` skill.
-- **Act 2 — Explore the data & governed layer (~3 min):** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, and `$lineage` to trace the semantic view back to sources.
-- **Act 3 — Ask the agent (~3 min):** question the deployed agent — in Snowflake Cowork (Snowsight) or via `cortex agents run` (CLI/Desktop) — and `cortex analyst query` against the semantic views.
-- **Act 4 — Governance (~3 min):** `$trust-center` for account security posture, RBAC role switch, optional dynamic PII masking, session guardrails (RSS read-only) — the highest-priority act if you're short on time.
-- **Act 5 — Extend, iterate & commit (~3 min):** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, save the convention to memory as a rule, rebuild correctly using an `@` style reference, `/compact`, then commit with an auto-generated message.
+- **Act 1 — Orientation & Deploy:** pick a model, explore the repo, deploy the whole stack via the `dislocation-lab` skill.
+- **Act 2 — Explore the data & governed layer:** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, and `$lineage` to trace the semantic view back to sources.
+- **Act 3 — Ask the agent:** question the deployed agent — in Snowflake Cowork (Snowsight) or via `cortex agents run` (CLI/Desktop) — and `cortex analyst query` against the semantic views.
+- **Act 4 — Governance:** `$trust-center` for account security posture, RBAC role switch, optional dynamic PII masking, session guardrails (RSS read-only) — the highest-priority act if you're short on time.
+- **Act 5 — Extend, iterate & commit:** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, save the convention to memory as a rule, rebuild correctly using an `@` style reference, `/compact`, then commit with an auto-generated message.
 
 **Capabilities demonstrated:** built-in and custom skills (`$data-quality`, `$lineage`, `$trust-center`, `dislocation-lab`), `@` file mentions and `#` table mentions for context injection, direct SQL execution, `cortex agents run` / `cortex analyst query`, memory rules (`cortex memory`), session guardrails / RSS (`/guardrails`), git, session management (`/model`, `/fork`, `/rewind`, `/compact`), and iterative problem-solving.
 
 ---
 
-## Act 1 — Orientation & Deploy (~3 min)
+## Act 1 — Orientation & Deploy
 
 > **Story:** "Here's a repo that claims to deploy an agentic dislocation workload. Let's understand it, then stand it up."
 
@@ -174,6 +174,8 @@ Input the following prompt:
 
 ### Prompt 6 — Trace lineage
 
+Input the following prompt:
+
 ```text
 $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 ```
@@ -196,15 +198,23 @@ $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 
 The deployed agent is `DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT`. `setup.sh` already exposed it in **Snowflake Cowork** (step `007-cowork.sql`), so it's reachable two ways.
 
-**In Snowsight (recommended there):** open **Snowflake Cowork** — Snowsight » **AI & ML » Agents** (or [ai.snowflake.com](https://ai.snowflake.com)) — select `DISLOCATION_ANALYSIS_AGENT`, and ask the prompts below in the chat UI.
+**In Snowsight:** navigate to **Snowflake Cowork** (or directly with [ai.snowflake.com](https://ai.snowflake.com)) — select `DISLOCATION_ANALYSIS_AGENT`, and ask the prompts below in the chat UI.
+
+![Snowflake Cowork](assets/act3/nav1.png){: style="width:500px; display: block; margin-left: auto; margin-right: auto;"}
 
 **On the CLI / CoCo Desktop:** reach the same agent with `cortex agents run` (tip: prefix a command with `!` inside a CoCo session to run it in-line, or use a second terminal).
 
 ### Prompt 8 — Find dislocation
 
-Cowork: *"Find pricing dislocation in Florida property"* — or from a shell:
+Input the following prompt in Cowork:
 
+```text
+Find pricing dislocation in Florida property
 ```
+
+or from a shell:
+
+```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Find pricing dislocation in Florida property"
 ```
 
@@ -212,13 +222,25 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Find pricing
 
 ### Prompt 9 — Compare states & explain drivers
 
-Cowork: *"Compare dislocation risk across all states"* — or from a shell:
+Input the following prompt in Cowork:
+
+```text
+Compare dislocation risk across all states
+```
+
+or from a shell:
 
 ```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Compare dislocation risk across all states"
 ```
 
-Cowork: *"Why is Louisiana showing so many critical segments?"* — or from a shell
+Input the following prompt in Cowork:
+
+```text
+Why is Louisiana showing so many critical segments?
+``
+
+or from a shell:
 
 ```shell
 cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louisiana showing so many critical segments?"
@@ -228,11 +250,17 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louis
 
 ### Prompt 10 — Query the semantic view directly
 
+You can also query a semantic view directly from a CoCo panel in Snowsight. Input the following prompt in CoCo:
+
+query SV_DISLOCATION with Cortex Analyst
+
+or from a shell:
+
 ```shell
 cortex analyst query "Which segments combine the highest rate increase with the highest lapse propensity in Florida?" --view DISLOCATION_DEMO.CORE.SV_DISLOCATION
 ```
 
-**Expected:** Cortex Analyst answers straight off the governed semantic layer — the same logic the agent uses, no agent hop. (In Snowsight, ask CoCo in the panel to *"query SV_DISLOCATION with Cortex Analyst"* if you prefer to stay in the UI.)
+**Expected:** Cortex Analyst answers straight off the governed semantic layer — the same logic the agent uses, no agent hop. (.)
 
 ---
 
