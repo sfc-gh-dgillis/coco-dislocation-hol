@@ -192,7 +192,7 @@ $lineage Show the full lineage of DISLOCATION_DEMO.CORE.VW_DISLOCATION_ANALYSIS.
 
 ---
 
-## Act 3 — Ask the agent (~3 min)
+## Act 3 — Ask the Agent
 
 > **Story:** "Now the payoff — a governed agent that answers pricing questions in plain English."
 
@@ -252,7 +252,9 @@ cortex agents run DISLOCATION_DEMO.CORE.DISLOCATION_ANALYSIS_AGENT "Why is Louis
 
 You can also query a semantic view directly from a CoCo panel in Snowsight. Input the following prompt in CoCo:
 
+```text
 query SV_DISLOCATION with Cortex Analyst
+```
 
 or from a shell:
 
