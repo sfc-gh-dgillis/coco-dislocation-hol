@@ -73,7 +73,7 @@ Your environment is pre-configured.
 - **Act 1 — Orientation & Deploy:** pick a model, explore the repo, deploy the whole stack via the `dislocation-lab` skill.
 - **Act 2 — Explore the data & governed layer:** `$data-quality` on the seeded tables, `#` table mentions to inspect raw data and the scoring view, and `$lineage` to trace the semantic view back to sources.
 - **Act 3 — Ask the agent:** question the deployed agent — in Snowflake Cowork (Snowsight) or via `cortex agents run` (CLI/Desktop) — and `cortex analyst query` against the semantic views.
-- **Act 4 — Governance:** `$trust-center` for account security posture, RBAC role switch, optional dynamic PII masking, session guardrails (RSS read-only) — the highest-priority act if you're short on time.
+- **Act 4 — Governance:** `$trust-center` for account security posture, RBAC role switch, dynamic PII masking, end-to-end role proof — the highest-priority act if you're short on time.
 - **Act 5 — Extend, iterate & commit:** `/fork` a checkpoint, build the wrong thing, `/rewind` + clean up, save the convention to memory as a rule, rebuild correctly using an `@` style reference, `/compact`, then commit with an auto-generated message.
 
 **Capabilities demonstrated:** built-in and custom skills (`$data-quality`, `$lineage`, `$trust-center`, `dislocation-lab`), `@` file mentions and `#` table mentions for context injection, direct SQL execution, `cortex agents run` / `cortex analyst query`, memory rules (`cortex memory`), session guardrails / RSS (`/guardrails`), git, session management (`/model`, `/fork`, `/rewind`, `/compact`), and iterative problem-solving.
@@ -274,49 +274,48 @@ cortex analyst query "Which segments combine the highest rate increase with the 
 
 Governance starts with knowing where you stand. Invoke the Trust Center skill to summarize Snowflake's built-in security scanners for the whole account.
 
-- **CLI:** invoke with `$trust-center`
+- **Snowsight:** use `/` in the CoCo side panel to invoke the trust-center skill
 - **CoCo Desktop:** use the skill selector in the prompt dialogue box
-- **Snowsight:** use `/` in the CoCo side panel to invoke trust-center
+- **CLI:** invoke with `$trust-center`
 
 ```text
 $trust-center Summarize the current security findings for my account — list anything CRITICAL or HIGH by severity, and note whether the checks relevant to this lab (roles and grants) look clean.
 ```
 
-**Expected:** The trust-center skill reads Snowflake's Trust Center scanners (Security Essentials is on by default) and returns a prioritized, plain-English summary of findings by severity — account-wide posture before we drill into this lab's RBAC, masking, and session guardrails.
+**Expected:** The trust-center skill reads Snowflake's Trust Center scanners (Security Essentials is on by default) and returns a prioritized, plain-English summary of findings by severity — account-wide posture before we drill into this lab's RBAC and masking.
 
 ### Prompt 12 — Show RBAC differences
 
 ```text
-Using my connection, show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both.
+Show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both.
 ```
 
-**Expected:** CoCo runs the role-scoped queries (`USE ROLE …; USE SECONDARY ROLES NONE; …`) and shows the Director blocked on raw tables while the Analyst has full access — governance enforced by Snowflake, not app code.
+**Expected:** CoCo runs the role-scoped queries (`USE ROLE …; USE SECONDARY ROLES NONE; …`) and shows the Director blocked on raw tables while the Analyst has full access — governance enforced by Snowflake's RBAC, not app code.
 
-### Prompt 13 (optional) — Dynamic PII masking
+### Prompt 13 — Dynamic PII masking
 
-```
+```text
 Apply the optional PII masking module, then show the same Florida claims query as the Analyst vs the Director role.
 ```
 
-**Expected:** CoCo runs `sql/optional-pii_masking.sql`, then the same query returns full claimant/attorney names for the Analyst and `●●●● REDACTED ●●●●` for the Director — same rows, same financials, names masked at the platform layer.
+**Expected:** CoCo runs `sql/optional-pii_masking.sql`, then the same query returns full claimant/attorney names for the Analyst and `●●●● REDACTED ●●●●` for the Director — same rows, same financials, names masked at the platform layer. This is Snowflake Dynamic Data Masking: a policy applied once, enforced everywhere, regardless of how the data is accessed.
 
-### Prompt 14 — Put CoCo on a leash with guardrails (RSS)
+### Prompt 14 — Prove the roles hold end-to-end
 
-RBAC governs what *roles* can do. **Guardrails** govern what *CoCo itself* can do in this session — a Restricted Session Scope (RSS) enforced by Snowflake, above RBAC. Open the guardrails panel:
-
-```text
-/guardrails
-```
-
-Turn on **SQL read-only** (or activate a named scope that blocks writes) and press **Activate** — the footer shows `[RSS activated]`. Now ask CoCo to make a change:
+Combine what you've seen. Switch to the Director role and try to access both the governed agent and a raw table in the same turn:
 
 ```text
-Drop the VW_DISLOCATION_ANALYSIS view.
+USE ROLE DISLOCATION_DIRECTOR_RL; Now query VW_CLAIMS_DETAIL for Florida claims over $50K — then try selecting directly from DIM_POLICY.
 ```
 
-**Expected:** CoCo refuses — the DROP fails with a *"Restricted session scope"* error because the active scope permits only `data read`. Reads still work, and git still works (RSS governs SQL, not the shell). Deactivate anytime from the same `/guardrails` panel.
+**Expected:** The view query succeeds (the Director has SELECT on adapter views), but the direct table query fails with an *insufficient privileges* error. The Director can consume governed data products — views, semantic views, the agent — but cannot bypass them to reach raw tables. Switch back to your admin role when done:
 
-> **CLI / CoCo Desktop:** `/guardrails` is a CoCo command; you can also start locked-down with `cortex --sql-read-only`. In Snowsight, rely on the RBAC and masking controls above — RSS is a terminal/desktop capability today.
+```text
+USE ROLE ACCOUNTADMIN;
+```
+
+> **CLI / CoCo Desktop (optional) — Put CoCo on a leash with guardrails (RSS):**
+> RBAC governs what *roles* can do; **Guardrails** govern what *CoCo itself* can do in a session — a Restricted Session Scope (RSS) enforced by Snowflake, above RBAC. Run `/guardrails`, activate **SQL read-only**, then ask CoCo to `Drop the VW_DISLOCATION_ANALYSIS view.` — it refuses with a *"Restricted session scope"* error. RSS is a CLI/Desktop capability today; in Snowsight, the RBAC and masking controls above are your enforcement layer.
 
 ---
 
