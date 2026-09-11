@@ -137,6 +137,113 @@ Set up the dislocation lab in my Snowflake account.
 
 ---
 
+## Interlude — Anatomy of a skill
+
+You just watched `dislocation-lab` deploy a whole environment from one sentence. That skill is not magic — it is a Markdown file. Understanding its shape is what lets you build your own.
+
+### What a skill actually is
+
+A skill is a folder containing a `SKILL.md` with two parts:
+
+**Frontmatter** — a fenced block at the top with two fields:
+
+```markdown
+---
+name: dislocation-lab
+description: "Operate the Pricing Dislocation Coco hands-on lab in any environment — Coco CLI, Coco Desktop, or Coco in Snowsight (Cloud Agents). Use this skill whenever the user mentions: set up / deploy the lab, reset the lab, tear down, verify the deployment, ask the agent, dislocation analysis, dislocation score, retention risk, run the lab, the demo script, or any deploy/verify/governance operation in this project. Always use this skill for lab-related tasks even if the user doesn't say 'lab'."
+---
+```
+
+- `name` — kebab-case identifier; this is what you type after `$` or `/`.
+- `description` — **the most important field.** It is how CoCo decides whether to activate the skill at all. A good description says what it does, when to use it, and lists the everyday trigger phrases a teammate would actually type. Cast a wide net: "set up the lab" and "deploy the lab" should both land.
+
+**Body** — plain Markdown teaching CoCo the job. Common sections:
+
+- `## Workflow` — the ordered steps CoCo follows.
+- `## Stopping Points` — where CoCo must pause and check in with a human.
+- `## Output` — what "done" looks like.
+
+Open `.cortex/skills/dislocation-lab/SKILL.md` and read it against that outline — same anatomy, aimed at Snowflake deployment.
+
+### When a skill is worth building
+
+The signal is **repetition with structure**: you do the same shaped task more than once, with different inputs each time. Standing up a pipeline the same way. Running the same pre-ship checks. Deploying a lab. A genuine one-off, or something open-ended and creative, is just clutter in your `/` picker.
+
+Two rules before you start:
+
+1. **Define the outcome.** The artifact your skill must produce every single time.
+2. **Write down the steps first.** Even a rough ordered list — that way the skill encodes the workflow you actually run, not a guess at it.
+
+And check whether it already exists. CoCo ships with a large built-in library (data-quality, lineage, trust-center, dynamic-tables, machine-learning, governance, cost — you have already used two of them in this lab):
+
+```text
+/find-skill is there already a skill for profiling a table's null rates?
+```
+
+### Build one from this lab
+
+CoCo ships a built-in skill whose entire job is writing other skills. You do not hand-author `SKILL.md`.
+
+```text
+$skill-development I want a skill that profiles any table in DISLOCATION_DEMO.CORE and returns row counts, null rates, and distributions in a consistent format.
+```
+
+`skill-development` interviews you — name, purpose, triggers, any scripts — then **pauses for your confirmation** before writing anything. It proposes a structure, pauses again, then writes the files into your skills folder. There is no registration step; the skill appears the next time you open the picker.
+
+The other direction is often better: capture work you already finished, while it is fresh.
+
+```text
+$skill-development Make a skill out of the dislocation analysis we just ran.
+```
+
+CoCo reads back through the session, extracts the repeatable workflow underneath it, and generalizes the specifics. You are not guessing at the steps — you are saving the ones that already worked. Any time you finish something here and think *I'll be doing this again*, that is the cue.
+
+### Structure — the full skill folder
+
+CoCo shares one context window across the whole conversation, so a lean, focused skill is a faster and more reliable skill. That is why detail lives in separate directories: CoCo loads them only when a step actually calls for them.
+
+Everything except `SKILL.md` is optional:
+
+```text
+your-skill-name/
+├── SKILL.md                  # Required - main skill file
+├── scripts/                  # Optional - executable code
+│   ├── process_data.py       # Example
+│   └── validate.sh           # Example
+├── references/               # Optional - documentation
+│   ├── api-guide.md          # Example
+│   └── examples/             # Example
+└── assets/                   # Optional - templates, etc.
+    └── report-template.md    # Example
+```
+
+Start with just `SKILL.md`. Add a directory when the skill actually needs it: `scripts/` when a step is deterministic enough to run as code rather than describe in prose, `references/` when detail is bulky or owned by someone else, `assets/` when the skill emits a document that should follow a fixed shape. For a job with clearly separate branches, keep `SKILL.md` as a thin router and give each branch its own subfolder with its own `SKILL.md`.
+
+### Where skills live, by surface
+
+Same invocation everywhere (`/`), different homes:
+
+| | CoCo CLI | CoCo Desktop | Snowsight |
+|---|---|---|---|
+| **Location** | `.cortex/skills/` (project) or `~/.snowflake/cortex/skills/` (global) | `.snowflake/cortex/skills/` plus registered local folders | the workspace's `.snowflake/cortex/skills/` — workspace-scoped only |
+| **Create** | `$skill-development`, or add a `SKILL.md` yourself | `$skill-development`, or Agent Settings → Skills → Add Local Skill | **+ Create Skill**, or Upload Skill File(s)/Folder(s) |
+| **Invoke** | `/` or `$skill-name`; `/skill list` to browse | `/`, or let CoCo auto-match | `/` in the message box |
+| **Share** | `cortex skill publish --to-stage`, a Git repo, or the catalog | Publish to Skills Catalog, or add from GitHub | `$share-skill` for a share link |
+
+Desktop and the CLI read the same `~/.snowflake/cortex/skills.json`, so a skill added in one shows up in the other. Snowsight skills do not follow you out of the workspace.
+
+### Share it, or nobody else gets it
+
+A skill on your laptop only helps you. Publish to the [**Skills Catalog**](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-snowsight/skills-and-plugins#skills-and-plugins-in-horizon-catalog) — Snowflake's governed registry in the Horizon Catalog, with access controlled by roles — and teammates find it with `$find-skill` and install in one step, all running the same version. If your toolkit grows past a couple of related skills, `plugin-creator` (Desktop) packages them into a single installable **plugin**.
+
+### Iterate
+
+Skills are living documents. Come back to `$skill-development` to **audit** one against best practices, **refactor** one that has grown too broad, or **extend** one with a new capability — describe the change and let CoCo rewrite the `SKILL.md`.
+
+> **Source:** [Build Your First CoCo Skill](https://www.snowflake.com/en/developers/guides/build-a-coco-skill/) · [Create your own skill](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-code/skills) · [Skills & plugins in the Horizon Catalog](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-snowsight/skills-and-plugins#skills-and-plugins-in-horizon-catalog)
+
+---
+
 ## Act 2 — Explore the data & governed layer
 
 > **Story:** Validate the data quality and trace how raw tables feed the scoring logic.
