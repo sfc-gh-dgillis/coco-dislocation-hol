@@ -143,9 +143,11 @@ You just watched `dislocation-lab` deploy a whole environment from one sentence.
 
 ### What a skill actually is
 
-A skill is a folder containing a `SKILL.md` with two parts:
+Agent Skills are modular capabilities that extend CoCo's functionality. Each Skill packages instructions, metadata, and optional resources (scripts, templates) that CoCo uses automatically when relevant.
 
-**Frontmatter** — a fenced block at the top with two fields:
+A skill is simply a folder containing a `SKILL.md` file having two parts:
+
+**YAML Frontmatter** — a fenced block at the top with two fields providing discovery information:
 
 ```markdown
 ---
@@ -157,27 +159,35 @@ description: "Operate the Pricing Dislocation Coco hands-on lab in any environme
 - `name` — kebab-case identifier; this is what you type after `$` or `/`.
 - `description` — **the most important field.** It is how CoCo decides whether to activate the skill at all. A good description says what it does, when to use it, and lists the everyday trigger phrases a teammate would actually type. Cast a wide net: "set up the lab" and "deploy the lab" should both land.
 
-**Body** — plain Markdown teaching CoCo the job. Common sections:
+**Body** — plain Markdown teaching CoCo the job. Be specific and actionable. Common sections:
 
 - `## Workflow` — the ordered steps CoCo follows.
 - `## Stopping Points` — where CoCo must pause and check in with a human.
 - `## Output` — what "done" looks like.
 
-Open `.cortex/skills/dislocation-lab/SKILL.md` and read it against that outline — same anatomy, aimed at Snowflake deployment.
+> Concise is key. Your skill shares the context window with everything else CoCo needs to know, including:
+> 
+> - The system prompt
+> - Conversation history
+> - Other skills' metadata
+> - Your request
+> - Thinking...
 
 ### When a skill is worth building
 
-The signal is **repetition with structure**: you do the same shaped task more than once, with different inputs each time. Standing up a pipeline the same way. Running the same pre-ship checks. Deploying a lab. A genuine one-off, or something open-ended and creative, is just clutter in your `/` picker.
+**Repetition with structure**: you do the same task more than once, with different inputs each time. Standing up a pipeline the same way. Running the same pre-ship checks.
 
-Two rules before you start:
+Guidelines:
 
 1. **Define the outcome.** The artifact your skill must produce every single time.
 2. **Write down the steps first.** Even a rough ordered list — that way the skill encodes the workflow you actually run, not a guess at it.
 
-And check whether it already exists. CoCo ships with a large built-in library (data-quality, lineage, trust-center, dynamic-tables, machine-learning, governance, cost — you have already used two of them in this lab):
+Check whether it already exists. CoCo ships with a large built-in library (data-quality, lineage, trust-center, dynamic-tables, machine-learning, governance, cost — you have already used two of them in this lab):
+
+Slash commands
 
 ```text
-/find-skill is there already a skill for profiling a table's null rates?
+/find-skill-and-plugin is there already a skill for profiling a table's null rates?
 ```
 
 ### Build one from this lab
@@ -239,8 +249,6 @@ A skill on your laptop only helps you. Publish to the [**Skills Catalog**](https
 ### Iterate
 
 Skills are living documents. Come back to `$skill-development` to **audit** one against best practices, **refactor** one that has grown too broad, or **extend** one with a new capability — describe the change and let CoCo rewrite the `SKILL.md`.
-
-> **Source:** [Build Your First CoCo Skill](https://www.snowflake.com/en/developers/guides/build-a-coco-skill/) · [Create your own skill](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-code/skills) · [Skills & plugins in the Horizon Catalog](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-snowsight/skills-and-plugins#skills-and-plugins-in-horizon-catalog)
 
 ---
 
@@ -394,7 +402,7 @@ $trust-center Summarize the current security findings for my account — list an
 ### Prompt 12 — Show RBAC differences
 
 ```text
-Show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both.
+Show that DISLOCATION_DIRECTOR_RL can query VW_DISLOCATION_ANALYSIS but not DIM_POLICY, and that DISLOCATION_ANALYST_RL can query both. Make sure secondary roles are disabled.
 ```
 
 **Expected:** CoCo runs the role-scoped queries (`USE ROLE …; USE SECONDARY ROLES NONE; …`) and shows the Director blocked on raw tables while the Analyst has full access — governance enforced by Snowflake's RBAC, not app code.
